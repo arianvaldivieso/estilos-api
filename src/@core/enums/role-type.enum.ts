@@ -3,3 +3,8 @@ export enum RoleType {
   ADMIN = 'admin',
   USER = 'user',
 }
+
+export enum AllowedRoleType {
+  ADMIN = 'admin',
+  USER = 'user',
+}
