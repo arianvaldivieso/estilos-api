@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -23,7 +23,7 @@ export class RolesService {
     return `This action returns all roles`;
   }
 
-  async findOneByName(name: string): Promise<any> {
+  async findOneByName(name: RoleType.ADMIN | RoleType.USER): Promise<any> {
     const roleType = RoleType[name.toUpperCase() as keyof typeof RoleType];
 
     if (!roleType) {

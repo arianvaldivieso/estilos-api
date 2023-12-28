@@ -1,5 +1,5 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { AllowedRoleType } from 'src/@core/enums/role-type.enum';
+import { AllowedRoleTypes } from 'src/@core/enums/role-type.enum';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -19,6 +19,6 @@ export class CreateUserDto {
   password: string;
 
   @IsNotEmpty()
-  @IsEnum(AllowedRoleType)
-  role: AllowedRoleType;
+  @IsEnum(AllowedRoleTypes)
+  role: typeof AllowedRoleTypes;
 }

@@ -19,12 +19,15 @@ export class UsersService {
     private _roleService: RolesService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<any> {
     try {
       const newUser = Object.assign(new User(), createUserDto);
-      newUser.role = await this._roleService.findOneByName(newUser.role);
+      const roleName = createUserDto.role;
 
-      return await this._usersRepository.save(newUser);
+      Logger.log(`Role name: ${roleName}`);
+      newUser.role = await this._roleService.findOneByName(roleName);
+      Logger.log(`New user: ${JSON.stringify(newUser)}`);
+      //return await this._usersRepository.save(newUser);
     } catch (error) {
       Logger.error(error.message);
 
