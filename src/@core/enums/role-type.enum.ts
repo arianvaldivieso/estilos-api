@@ -4,7 +4,4 @@ export enum RoleType {
   USER = 'user',
 }
 
-export enum AllowedRoleType {
-  ADMIN = 'admin',
-  USER = 'user',
-}
+export const AllowedRoleTypes = [RoleType.ADMIN, RoleType.USER];
