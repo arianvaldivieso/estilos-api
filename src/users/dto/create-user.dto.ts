@@ -1,12 +1,12 @@
 import {
+  IsBoolean,
   IsEmail,
   IsEnum,
   IsNotEmpty,
   IsString,
-  Validate,
 } from 'class-validator';
+import { AllowedDocumentTypes } from 'src/@core/enums/document-type.enum';
 import { AllowedRoleTypes } from 'src/@core/enums/role-type.enum';
-import { IsEmailAlreadyExistConstraint } from 'src/@core/validations/user-email.validation';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -18,9 +18,45 @@ export class CreateUserDto {
   lastName: string;
 
   @IsNotEmpty()
-  @IsEmail({})
-  @Validate(IsEmailAlreadyExistConstraint)
+  @IsString()
+  avatar: string;
+
+  @IsNotEmpty()
+  @IsEnum(AllowedDocumentTypes)
+  documentType: AllowedDocumentTypes;
+
+  @IsNotEmpty()
+  @IsString()
+  documentNumber: string;
+
+  @IsNotEmpty()
+  @IsString()
+  cellPhone: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
   email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  city: string;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  termsAndConditions: boolean;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  dataPrivacy: boolean;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  electronicMoneyContract: boolean;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  offersAndDiscounts: boolean;
 
   @IsNotEmpty()
   @IsString()

@@ -1,4 +1,5 @@
 import { Role } from 'src/roles/entities/role.entity';
+
 import {
   Entity,
   Column,
@@ -11,6 +12,7 @@ import {
 } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
+import { AllowedDocumentTypes } from 'src/@core/enums/document-type.enum';
 
 @Entity()
 export class User {
@@ -23,14 +25,44 @@ export class User {
   @Column({ nullable: false })
   lastName: string;
 
-  @Column({ unique: true, nullable: false })
+  @Column({ nullable: false })
+  avatar: string;
+
+  @Column({ nullable: false })
+  documentType: AllowedDocumentTypes;
+
+  @Column({ nullable: false })
+  documentNumber: string;
+
+  @Column({ nullable: false })
+  cellPhone: string;
+
+  @Column({ nullable: false, unique: true })
   email: string;
+
+  @Column({ nullable: false })
+  department: string;
+
+  @Column({ nullable: false })
+  province: string;
+
+  @Column({ nullable: false })
+  district: string;
+
+  @Column({ nullable: false })
+  termsAndConditions: boolean;
+
+  @Column({ nullable: false })
+  dataPrivacy: boolean;
+
+  @Column({ nullable: false })
+  electronicMoneyContract: boolean;
+
+  @Column({ nullable: false })
+  offersAndDiscounts: boolean;
 
   @Column({ nullable: false, select: false })
   password: string;
-
-  @Column({ type: 'boolean', default: true })
-  isActive: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
