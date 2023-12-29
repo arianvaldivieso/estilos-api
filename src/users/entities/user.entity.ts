@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
-import { Logger } from '@nestjs/common';
 
 @Entity()
 export class User {

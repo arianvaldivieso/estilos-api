@@ -1,5 +1,12 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  Validate,
+} from 'class-validator';
 import { AllowedRoleTypes } from 'src/@core/enums/role-type.enum';
+import { IsEmailAlreadyExistConstraint } from 'src/@core/validations/user-email.validation';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -12,6 +19,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsEmail({})
+  @Validate(IsEmailAlreadyExistConstraint)
   email: string;
 
   @IsNotEmpty()
@@ -20,5 +28,5 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsEnum(AllowedRoleTypes)
-  role: typeof AllowedRoleTypes;
+  role: string;
 }

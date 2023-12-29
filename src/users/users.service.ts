@@ -19,20 +19,33 @@ export class UsersService {
     private _roleService: RolesService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<any> {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     try {
       const newUser = Object.assign(new User(), createUserDto);
       const roleName = createUserDto.role;
 
-      Logger.log(`Role name: ${roleName}`);
       newUser.role = await this._roleService.findOneByName(roleName);
-      Logger.log(`New user: ${JSON.stringify(newUser)}`);
-      //return await this._usersRepository.save(newUser);
+      return await this._usersRepository.save(newUser);
     } catch (error) {
       Logger.error(error.message);
 
       throw new InternalServerErrorException(
         'Ocurrió un error interno al crear el usuario.',
+      );
+    }
+  }
+
+  public async findOneByEmail(email: string): Promise<User> {
+    Logger.log(email);
+    try {
+      return await lastValueFrom(
+        from(this._usersRepository.findOne({ where: { email: email } })),
+      );
+    } catch (error) {
+      Logger.error(error.message);
+
+      throw new InternalServerErrorException(
+        'Ocurrió un error interno al buscar el usuario.',
       );
     }
   }
