@@ -1,3 +1,5 @@
+import { AllowedDocumentTypes } from '@core/enums/document-type.enum';
+import { AllowedRoleTypes } from '@core/enums/role-type.enum';
 import {
   IsBoolean,
   IsEmail,
@@ -5,8 +7,6 @@ import {
   IsNotEmpty,
   IsString,
 } from 'class-validator';
-import { AllowedDocumentTypes } from 'src/@core/enums/document-type.enum';
-import { AllowedRoleTypes } from 'src/@core/enums/role-type.enum';
 
 export class CreateUserDto {
   @IsNotEmpty()

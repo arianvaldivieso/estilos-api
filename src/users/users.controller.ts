@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { StandardResponseInterceptor } from 'src/@core/responses/standard-response.interceptor';
+import { StandardResponseInterceptor } from '@core/responses/standard-response.interceptor';
 
 @Controller('users')
 export class UsersController {

@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import RolesSeeder from 'config/seeders';
+import { SeederOptions, runSeeders } from 'typeorm-extension';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -20,6 +23,20 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           synchronize: true,
           name: 'default',
         };
+      },
+      // dataSource receives the configured DataSourceOptions
+      // and returns a Promise<DataSource>.
+      dataSourceFactory: async (options) => {
+        const dataSource: DataSource & SeederOptions = await new DataSource(
+          options,
+        ).initialize();
+        await runSeeders(dataSource, {
+          seeds: [
+            RolesSeeder,
+          ],
+          factories: [],
+        });
+        return dataSource;
       },
       inject: [ConfigService],
     }),

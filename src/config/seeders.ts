@@ -1,20 +1,24 @@
-import { createConnection } from 'typeorm';
-import { Role } from 'src/roles/entities/role.entity';
-import { RoleType } from 'src/@core/enums/role-type.enum';
+import { Seeder, SeederFactoryManager } from 'typeorm-extension';
+import { DataSource } from 'typeorm';
+import { Role } from 'roles/entities/role.entity';
+import { roles } from '@core/dummy/roles.dummy';
 
-async function run() {
-  const connection = await createConnection();
+export default class RolesSeeder implements Seeder {
+  public async run(
+    dataSource: DataSource,
+    factoryManager: SeederFactoryManager,
+  ): Promise<any> {
+    const repository = dataSource.getRepository(Role);
 
-  const roleRepository = connection.getRepository(Role);
+    const data = roles;
 
-  for (const roleType of Object.values(RoleType)) {
-    const role = new Role();
-    role.name = roleType;
+    for (let ind = 0; ind < data.length; ind++) {
+      const rol = await repository.findOneBy({ name: data[ind].name });
 
-    await roleRepository.save(role);
+      // Insert only one record with this username.
+      if (!rol) {
+        await repository.insert([rol]);
+      }
+    }
   }
-
-  await connection.close();
 }
-
-run().catch(console.error);
