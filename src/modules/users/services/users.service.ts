@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { lastValueFrom } from 'rxjs';
 import { from } from 'rxjs';
 import { log } from 'console';
-import { RolesService } from 'roles/roles.service';
+import { RolesService } from 'modules/roles/services/roles.service';
 
 @Injectable()
 export class UsersService {

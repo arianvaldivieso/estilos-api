@@ -1,7 +1,7 @@
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
-import { Role } from 'roles/entities/role.entity';
 import { roles } from '@core/dummy/roles.dummy';
+import { Role } from 'modules/roles/entities/role.entity';
 
 export default class RolesSeeder implements Seeder {
   public async run(
@@ -17,7 +17,7 @@ export default class RolesSeeder implements Seeder {
 
       // Insert only one record with this username.
       if (!rol) {
-        await repository.insert([rol]);
+        await repository.create([rol]);
       }
     }
   }

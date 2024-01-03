@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { RolesService } from './roles.service';
-import { RolesController } from './roles.controller';
+import { RolesService } from './services/roles.service';
+import { RolesController } from './controller/roles.controller';
 import { Role } from './entities/role.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

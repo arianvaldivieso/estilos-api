@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import RolesSeeder from 'config/seeders';
 import { SeederOptions, runSeeders } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
+import { Module } from '@nestjs/common/decorators/modules';
+import RolesSeeder from '@core/seeders/roles.seeder';
 
 @Module({
   imports: [
@@ -22,6 +22,7 @@ import { DataSource } from 'typeorm';
           entities: [__dirname + '/../**/*.entity{.ts,.js}'],
           synchronize: true,
           name: 'default',
+          dropSchema: true
         };
       },
       // dataSource receives the configured DataSourceOptions
