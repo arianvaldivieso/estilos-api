@@ -1,6 +1,6 @@
+import { RoleType } from '@core/enums/role-type.enum';
+import { Role } from 'roles/entities/role.entity';
 import { createConnection } from 'typeorm';
-import { Role } from 'src/roles/entities/role.entity';
-import { RoleType } from 'src/@core/enums/role-type.enum';
 
 async function run() {
   const connection = await createConnection();
