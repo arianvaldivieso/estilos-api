@@ -5,8 +5,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { lastValueFrom } from 'rxjs';
 import { from } from 'rxjs';
-import { RolesService } from 'src/roles/roles.service';
-import { log } from 'console';
+import { RolesService } from 'roles/roles.service';
 
 @Injectable()
 export class UsersService {

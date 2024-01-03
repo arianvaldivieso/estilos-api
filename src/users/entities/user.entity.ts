@@ -1,5 +1,3 @@
-import { Role } from 'src/roles/entities/role.entity';
-
 import {
   Entity,
   Column,
@@ -12,7 +10,8 @@ import {
 } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
-import { AllowedDocumentTypes } from 'src/@core/enums/document-type.enum';
+import { AllowedDocumentTypes } from '@core/enums/document-type.enum';
+import { Role } from 'roles/entities/role.entity';
 
 @Entity()
 export class User {
