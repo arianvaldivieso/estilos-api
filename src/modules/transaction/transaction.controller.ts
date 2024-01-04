@@ -27,9 +27,11 @@ export class TransactionController {
     return this._transactionService.create(createTransactionDto, req.user);
   }
 
+  @UseGuards(AuthGuard)
+  @UseInterceptors(StandardResponseInterceptor)
   @Get()
-  findAll() {
-    return this._transactionService.findAll();
+  findAll(@Request() req) {
+    return this._transactionService.findAll(req.user);
   }
 
   @Get(':id')

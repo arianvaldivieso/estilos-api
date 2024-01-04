@@ -33,6 +33,18 @@ export class Transaction {
   @Column()
   amount: number;
 
+  type: string;
+
+  setTransactionType(userId: number): void {
+    if (this.senderId == userId) {
+      this.type = 'expense';
+    } else if (this.receiverId == userId) {
+      this.type = 'income';
+    } else {
+      this.type = 'unknown';
+    }
+  }
+
   @Column({ default: 'pending' })
   status: string;
 

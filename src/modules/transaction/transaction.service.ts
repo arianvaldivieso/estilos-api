@@ -6,6 +6,7 @@ import { User } from 'modules/users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
+import { from, lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class TransactionService {
@@ -37,7 +38,45 @@ export class TransactionService {
       status: 'complete',
     };
 
-    return await this._transactionsRepository.save(payloadTransaction);
+    const transactionData =
+      await this._transactionsRepository.save(payloadTransaction);
+
+    const transaction = new Transaction();
+    Object.assign(transaction, transactionData);
+    transaction.setTransactionType(user.id);
+    return transaction;
+  }
+
+  async findAll(user: User) {
+    user = await this._usersService.findOneById(user.id, true);
+    const transactionsData = await lastValueFrom(
+      from(
+        this._transactionsRepository.find({
+          relations: ['sender', 'receiver'],
+        }),
+      ),
+    );
+
+    const transactions: Transaction[] = transactionsData.map((data) => {
+      const transaction = new Transaction();
+      Object.assign(transaction, data);
+      transaction.setTransactionType(user.id);
+      return transaction;
+    });
+
+    return transactions;
+  }
+
+  async findOne(id: number) {
+    return await lastValueFrom(
+      from(
+        this._transactionsRepository.findOne({
+          where: {
+            id: id,
+          },
+        }),
+      ),
+    );
   }
 
   async calculateBalance(userId: number): Promise<number> {
@@ -58,14 +97,6 @@ export class TransactionService {
     const balance = receivedAmount - sentAmount;
 
     return balance;
-  }
-
-  findAll() {
-    return `This action returns all transaction`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
   }
 
   update(id: number, updateTransactionDto: UpdateTransactionDto) {
