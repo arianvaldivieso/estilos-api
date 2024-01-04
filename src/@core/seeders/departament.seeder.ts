@@ -41,11 +41,15 @@ export default class DepartamentSeeder implements Seeder {
     const provinceRepository = dataSource.getRepository(Province);
 
     for (let ind = 0; ind < provinces.length; ind++) {
-      const rol = await provinceRepository.findOneBy({
+      const province = await provinceRepository.findOneBy({
         name: provinces[ind].name,
       });
 
-      if (!rol) {
+      if (!province) {
+        province = {
+          ...provinces[ind],
+        };
+
         try {
           const newprovince = provinceRepository.create(provinces[ind]);
           await provinceRepository.save(newprovince);
