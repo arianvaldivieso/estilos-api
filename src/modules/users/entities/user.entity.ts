@@ -79,7 +79,7 @@ export class User {
   offersAndDiscounts: boolean;
 
   @ApiProperty({ type: String })
-  @Column({ nullable: false, select: false })
+  @Column({ nullable: false, select: true })
   password: string;
 
   /** DATETIME */

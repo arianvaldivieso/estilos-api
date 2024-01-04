@@ -20,7 +20,7 @@ import DepartamentSeeder from '@core/seeders/departament.seeder';
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
         name: 'default',
-        dropSchema: true,
+        dropSchema: false,
       }),
 
       dataSourceFactory: async (options) => {

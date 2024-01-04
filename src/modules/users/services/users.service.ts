@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto } from '../../auth/dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
@@ -19,11 +19,24 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const emailExists = await this.findOneByEmail(createUserDto.email);
+    const documentExist = await this.findOneByDocument(
+      createUserDto.documentNumber,
+    );
+
+    const phoneExist = await this.findOneByPhone(createUserDto.cellPhone);
 
     if (emailExists) {
       throw new BadRequestException(
         'El correo electrónico ya está registrado.',
       );
+    }
+
+    if (documentExist) {
+      throw new BadRequestException('El documento ya está registrado.');
+    }
+
+    if (phoneExist) {
+      throw new BadRequestException('El télefono ya está registrado.');
     }
 
     const newUser = Object.assign(new User(), createUserDto);
@@ -37,6 +50,26 @@ export class UsersService {
   public async findOneByEmail(email: string): Promise<User> {
     return await lastValueFrom(
       from(this._usersRepository.findOne({ where: { email: email } })),
+    );
+  }
+
+  public async findOneByDocument(documentNumber: string): Promise<User> {
+    return await lastValueFrom(
+      from(
+        this._usersRepository.findOne({
+          where: { documentNumber: documentNumber },
+        }),
+      ),
+    );
+  }
+
+  public async findOneByPhone(cellPhone: string): Promise<User> {
+    return await lastValueFrom(
+      from(
+        this._usersRepository.findOne({
+          where: { cellPhone: cellPhone },
+        }),
+      ),
     );
   }
 

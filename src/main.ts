@@ -14,7 +14,7 @@ async function bootstrap() {
 
   //app.useGlobalFilters(new AllExceptionsFilter());
 
- /*  const options = new DocumentBuilder()
+  /*  const options = new DocumentBuilder()
     .setTitle(title_app)
     .setVersion('1.0')
     .setDescription(

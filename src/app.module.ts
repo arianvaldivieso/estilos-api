@@ -8,6 +8,7 @@ import { RolesModule } from 'modules/roles/roles.module';
 import { DepartamentModule } from './modules/departament/departament.module';
 import { ProvinceModule } from './modules/province/province.module';
 import { DistrictModule } from './modules/district/district.module';
+import { AuthModule } from 'modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { DistrictModule } from './modules/district/district.module';
     DepartamentModule,
     ProvinceModule,
     DistrictModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

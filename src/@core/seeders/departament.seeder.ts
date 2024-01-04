@@ -1,12 +1,11 @@
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
-import { Role } from 'modules/roles/entities/role.entity';
 import { Logger } from '@nestjs/common';
 import {
   departaments,
   districts,
   provinces,
-} from '@core/seeders-data/departament.data';
+} from '@core/seeders/seeders-data/departament.data';
 import { Departament } from 'modules/departament/entities/departament.entity';
 import { Province } from 'modules/province/entities/province.entity';
 import { District } from 'modules/district/entities/district.entity';

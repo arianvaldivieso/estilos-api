@@ -6,22 +6,24 @@ import {
   Param,
   UseInterceptors,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto } from '../../auth/dto/create-user.dto';
 import { StandardResponseInterceptor } from '@core/responses/standard-response.interceptor';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'modules/auth/auth.guard';
 
 @Controller('users')
 @ApiTags(UsersController.name)
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
 
-  @Post()
+  @UseGuards(AuthGuard)
   @UseInterceptors(StandardResponseInterceptor)
-  create(@Body() createUserDto: CreateUserDto) {
-    const user = this._usersService.create(createUserDto);
-    return user;
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
   }
 
   @Get()
