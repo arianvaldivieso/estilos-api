@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule,
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
@@ -17,6 +18,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           database: configService.get('DB_DATABASE'),
           entities: [__dirname + '/../**/*.entity{.ts,.js}'],
           synchronize: true,
+          name: 'default',
         };
       },
       inject: [ConfigService],
