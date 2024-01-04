@@ -1,5 +1,5 @@
 import { RoleType } from '@core/enums/role-type.enum';
-import { Role } from 'roles/entities/role.entity';
+import { Role } from 'modules/roles/entities/role.entity';
 import { createConnection } from 'typeorm';
 
 async function run() {

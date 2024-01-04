@@ -11,7 +11,7 @@ import {
 
 import * as bcrypt from 'bcrypt';
 import { AllowedDocumentTypes } from '@core/enums/document-type.enum';
-import { Role } from 'roles/entities/role.entity';
+import { Role } from 'modules/roles/entities/role.entity';
 
 @Entity()
 export class User {

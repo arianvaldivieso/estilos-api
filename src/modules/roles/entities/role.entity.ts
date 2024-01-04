@@ -1,12 +1,7 @@
 import { RoleType } from '@core/enums/role-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'modules/users/entities/user.entity';
-import {
-  Column,
-  PrimaryGeneratedColumn,
-  Entity,
-  OneToMany,
-} from 'typeorm';
+import { Column, PrimaryGeneratedColumn, Entity, OneToMany } from 'typeorm';
 
 @Entity()
 export class Role {
@@ -24,17 +19,17 @@ export class Role {
 
   @ApiProperty({ type: Date })
   @Column({
-      name: 'created_at',
-      type: 'timestamp',
-      default: () => 'CURRENT_TIMESTAMP',
+    name: 'created_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
 
   @ApiProperty({ type: Date })
   @Column({
-      name: 'update_at',
-      type: 'timestamp',
-      default: null,
+    name: 'update_at',
+    type: 'timestamp',
+    default: null,
   })
   updateAt: Date;
 
