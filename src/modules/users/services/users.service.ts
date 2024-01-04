@@ -30,7 +30,6 @@ export class UsersService {
         'El correo electrónico ya está registrado.',
       );
     }
-
     if (documentExist) {
       throw new BadRequestException('El documento ya está registrado.');
     }

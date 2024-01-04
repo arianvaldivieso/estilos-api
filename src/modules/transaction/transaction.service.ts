@@ -94,7 +94,6 @@ export class TransactionService {
 
   async calculateBalance(userId: number): Promise<number> {
     const user = await this._usersService.findOneById(userId, true);
-    console.log('holas');
     const sentAmount = user.sentTransactions
       .filter((transaction) => transaction.status === 'complete')
       .reduce((total, transaction) => total + transaction.amount, 0);
