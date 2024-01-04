@@ -1,10 +1,14 @@
-import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
-import { UsersModule } from './users/users.module';
-import { RolesModule } from './roles/roles.module';
 import { ConfigModule } from '@nestjs/config';
+import { Module } from '@nestjs/common/decorators/modules';
+import { UsersModule } from 'modules/users/users.module';
+import { RolesModule } from 'modules/roles/roles.module';
+import { DepartamentModule } from './modules/departament/departament.module';
+import { ProvinceModule } from './modules/province/province.module';
+import { DistrictModule } from './modules/district/district.module';
+import { AuthModule } from 'modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -14,6 +18,10 @@ import { ConfigModule } from '@nestjs/config';
     DatabaseModule,
     UsersModule,
     RolesModule,
+    DepartamentModule,
+    ProvinceModule,
+    DistrictModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
