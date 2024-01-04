@@ -17,7 +17,6 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
 
-  @ApiBearerAuth()
   @Post()
   @UseInterceptors(StandardResponseInterceptor)
   create(@Body() createUserDto: CreateUserDto) {
@@ -25,13 +24,11 @@ export class UsersController {
     return user;
   }
 
-  @ApiBearerAuth()
   @Get()
   findAll() {
     return this._usersService.findAll();
   }
 
-  @ApiBearerAuth()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return { message: id };

@@ -10,7 +10,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const message = exception.getResponse
       ? exception.getResponse().message
       : exception.message;
-    Logger.log(message);
+
+    Logger.error(exception);
+
     const status = exception.getStatus ? exception.getStatus() : 500;
 
     response.status(status).json({

@@ -12,9 +12,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  app.useGlobalFilters(new AllExceptionsFilter());
+  //app.useGlobalFilters(new AllExceptionsFilter());
 
-  const options = new DocumentBuilder()
+ /*  const options = new DocumentBuilder()
     .setTitle(title_app)
     .setVersion('1.0')
     .setDescription(
@@ -29,7 +29,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('', app, document);
+  SwaggerModule.setup('', app, document); */
 
   await app.listen(3000);
 }

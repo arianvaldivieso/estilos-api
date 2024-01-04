@@ -17,7 +17,7 @@ export class UsersService {
     private _roleService: RolesService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<any> {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const emailExists = await this.findOneByEmail(createUserDto.email);
 
     if (emailExists) {
@@ -44,12 +44,4 @@ export class UsersService {
     const users = await lastValueFrom(from(this._usersRepository.find()));
     return users;
   }
-
-  /* update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  } */
 }

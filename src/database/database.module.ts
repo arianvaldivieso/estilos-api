@@ -4,6 +4,7 @@ import { SeederOptions, runSeeders } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 import { Module } from '@nestjs/common/decorators/modules';
 import RolesSeeder from '@core/seeders/roles.seeder';
+import DepartamentSeeder from '@core/seeders/departament.seeder';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import RolesSeeder from '@core/seeders/roles.seeder';
             options,
           ).initialize();
           await runSeeders(dataSource, {
-            seeds: [RolesSeeder],
+            seeds: [RolesSeeder, DepartamentSeeder],
             factories: [],
           });
           return dataSource;

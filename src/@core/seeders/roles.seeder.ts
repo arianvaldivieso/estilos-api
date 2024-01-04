@@ -1,8 +1,8 @@
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
-import { roles } from '@core/dummy/roles.dummy';
 import { Role } from 'modules/roles/entities/role.entity';
 import { Logger } from '@nestjs/common';
+import { roles } from '@core/seeders-data/roles.data';
 
 export default class RolesSeeder implements Seeder {
   public async run(
