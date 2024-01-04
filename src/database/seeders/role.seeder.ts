@@ -1,4 +1,4 @@
-import { Role } from 'roles/entities/role.entity';
+import { Role } from 'modules/roles/entities/role.entity';
 import { Connection } from 'typeorm';
 import { Factory, Seeder } from 'typeorm-seeding';
 
