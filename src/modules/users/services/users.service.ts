@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../../auth/dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { lastValueFrom } from 'rxjs';
 import { from } from 'rxjs';
 import { log } from 'console';
@@ -45,6 +45,16 @@ export class UsersService {
     const role: Role = await this._roleService.findOneByName(roleName);
     newUser.rol = role;
     return await this._usersRepository.save(newUser);
+  }
+
+  public async findOneById(id: number, includeRelations: boolean = false) {
+    const options: FindOneOptions<User> = { where: { id: id } };
+
+    if (includeRelations) {
+      options.relations = ['sentTransactions', 'receivedTransactions'];
+    }
+
+    return await lastValueFrom(from(this._usersRepository.findOne(options)));
   }
 
   public async findOneByEmail(email: string): Promise<User> {

@@ -25,7 +25,7 @@ export class AuthController {
     return this._authService.signIn(
       createUserDto.documentNumber,
       createUserDto.documentType,
-      'password123',
+      '123456789',
     );
   }
 }

@@ -7,12 +7,14 @@ import {
   BeforeInsert,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
 import { AllowedDocumentTypes } from '@core/enums/document-type.enum';
 import { Role } from 'modules/roles/entities/role.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transaction } from 'modules/transaction/entities/transaction.entity';
 
 @Entity()
 export class User {
@@ -81,6 +83,12 @@ export class User {
   @ApiProperty({ type: String })
   @Column({ nullable: false, select: true })
   password: string;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.sender)
+  sentTransactions: Transaction[];
+
+  @OneToMany(() => Transaction, (transaction) => transaction.receiver)
+  receivedTransactions: Transaction[];
 
   /** DATETIME */
 
