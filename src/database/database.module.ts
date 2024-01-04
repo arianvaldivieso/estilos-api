@@ -7,24 +7,20 @@ import RolesSeeder from '@core/seeders/roles.seeder';
 
 @Module({
   imports: [
-    ConfigModule,
-
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => {
-        return {
-          type: 'mysql',
-          host: configService.get('DB_HOST'),
-          port: parseInt(configService.get('DB_PORT')),
-          username: configService.get('DB_USERNAME'),
-          password: configService.get('DB_PASSWORD'),
-          database: configService.get('DB_DATABASE'),
-          entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-          synchronize: true,
-          name: 'default',
-          dropSchema: true
-        };
-      },
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get('DB_HOST'),
+        port: parseInt(configService.get('DB_PORT')),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_DATABASE'),
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        synchronize: true,
+        name: 'default',
+        dropSchema: true,
+      }),
       // dataSource receives the configured DataSourceOptions
       // and returns a Promise<DataSource>.
       dataSourceFactory: async (options) => {
@@ -32,9 +28,7 @@ import RolesSeeder from '@core/seeders/roles.seeder';
           options,
         ).initialize();
         await runSeeders(dataSource, {
-          seeds: [
-            RolesSeeder,
-          ],
+          seeds: [RolesSeeder],
           factories: [],
         });
         return dataSource;

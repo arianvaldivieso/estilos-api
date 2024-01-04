@@ -5,15 +5,22 @@ import {
   Body,
   Param,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { StandardResponseInterceptor } from '@core/responses/standard-response.interceptor';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtGuard } from 'guards/jwt.guard';
 
 @Controller('users')
+@ApiTags(UsersController.name)
+
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
 
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
   @Post()
   @UseInterceptors(StandardResponseInterceptor)
   create(@Body() createUserDto: CreateUserDto) {
@@ -21,11 +28,15 @@ export class UsersController {
     return user;
   }
 
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
   @Get()
   findAll() {
     return this._usersService.findAll();
   }
 
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return { message: id };

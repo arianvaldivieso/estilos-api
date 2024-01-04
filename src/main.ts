@@ -20,11 +20,17 @@ async function bootstrap() {
     .setDescription(
       `Credenciales para obtener un jwt </br> {</br>"email": ,</br>"password": </br>}`,
     )
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      in: 'headers',
+    })
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('', app, document);
   
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();
