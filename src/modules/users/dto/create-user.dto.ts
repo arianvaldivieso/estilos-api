@@ -21,8 +21,6 @@ export class CreateUserDto {
   lastName: string;
 
   @ApiProperty({ type: String })
-  @IsNotEmpty()
-  @IsString()
   avatar: string;
 
   @ApiProperty({ enum: AllowedDocumentTypes })

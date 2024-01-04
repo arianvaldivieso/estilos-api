@@ -11,15 +11,12 @@ import { UsersService } from '../services/users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { StandardResponseInterceptor } from '@core/responses/standard-response.interceptor';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from 'guards/jwt.guard';
 
 @Controller('users')
 @ApiTags(UsersController.name)
-
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
 
-  @UseGuards(JwtGuard)
   @ApiBearerAuth()
   @Post()
   @UseInterceptors(StandardResponseInterceptor)
@@ -28,28 +25,16 @@ export class UsersController {
     return user;
   }
 
-  @UseGuards(JwtGuard)
   @ApiBearerAuth()
   @Get()
   findAll() {
     return this._usersService.findAll();
   }
 
-  @UseGuards(JwtGuard)
   @ApiBearerAuth()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return { message: id };
     //return this._usersService.findOne(+id);
   }
-
-  /* @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this._usersService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this._usersService.remove(+id);
-  } */
 }

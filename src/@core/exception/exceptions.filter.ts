@@ -7,10 +7,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
 
-    Logger.log(exception.getResponse());
     const message = exception.getResponse
       ? exception.getResponse().message
       : exception.message;
+    Logger.log(message);
     const status = exception.getStatus ? exception.getStatus() : 500;
 
     response.status(status).json({

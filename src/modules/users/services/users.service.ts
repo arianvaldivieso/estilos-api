@@ -7,6 +7,7 @@ import { lastValueFrom } from 'rxjs';
 import { from } from 'rxjs';
 import { log } from 'console';
 import { RolesService } from 'modules/roles/services/roles.service';
+import { Role } from 'modules/roles/entities/role.entity';
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,7 @@ export class UsersService {
     private _roleService: RolesService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<any> {
     const emailExists = await this.findOneByEmail(createUserDto.email);
 
     if (emailExists) {
@@ -28,7 +29,8 @@ export class UsersService {
     const newUser = Object.assign(new User(), createUserDto);
     const roleName = createUserDto.role;
 
-    newUser.role = await this._roleService.findOneByName(roleName);
+    const role: Role = await this._roleService.findOneByName(roleName);
+    newUser.rol = role;
     return await this._usersRepository.save(newUser);
   }
 
