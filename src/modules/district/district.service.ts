@@ -1,15 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDistrictDto } from './dto/create-district.dto';
 import { UpdateDistrictDto } from './dto/update-district.dto';
+import { District } from './entities/district.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { from, lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class DistrictService {
+  constructor(
+    @InjectRepository(District)
+    private _districtsRepository: Repository<District>,
+  ) {}
+
   create(createDistrictDto: CreateDistrictDto) {
     return 'This action adds a new district';
   }
 
-  findAll() {
-    return `This action returns all district`;
+  async findAll(): Promise<District[]> {
+    return await lastValueFrom(from(this._districtsRepository.find()));
   }
 
   findOne(id: number) {

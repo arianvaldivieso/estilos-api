@@ -44,11 +44,6 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
-  @ApiProperty({ type: String })
-  @IsNotEmpty()
-  @IsString()
-  city: string;
-
   @ApiProperty({ type: Boolean })
   @IsNotEmpty()
   @IsBoolean()
