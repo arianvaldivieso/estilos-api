@@ -6,50 +6,34 @@ import {
   Param,
   UseInterceptors,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto } from '../../auth/dto/create-user.dto';
 import { StandardResponseInterceptor } from '@core/responses/standard-response.interceptor';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtGuard } from 'guards/jwt.guard';
+import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'modules/auth/auth.guard';
 
 @Controller('users')
 @ApiTags(UsersController.name)
-
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
 
-  @UseGuards(JwtGuard)
-  @ApiBearerAuth()
-  @Post()
+  @UseGuards(AuthGuard)
   @UseInterceptors(StandardResponseInterceptor)
-  create(@Body() createUserDto: CreateUserDto) {
-    const user = this._usersService.create(createUserDto);
-    return user;
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
   }
 
-  @UseGuards(JwtGuard)
-  @ApiBearerAuth()
   @Get()
   findAll() {
     return this._usersService.findAll();
   }
 
-  @UseGuards(JwtGuard)
-  @ApiBearerAuth()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return { message: id };
     //return this._usersService.findOne(+id);
   }
-
-  /* @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this._usersService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this._usersService.remove(+id);
-  } */
 }

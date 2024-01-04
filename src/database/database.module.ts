@@ -4,6 +4,7 @@ import { SeederOptions, runSeeders } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 import { Module } from '@nestjs/common/decorators/modules';
 import RolesSeeder from '@core/seeders/roles.seeder';
+import DepartamentSeeder from '@core/seeders/departament.seeder';
 
 @Module({
   imports: [
@@ -19,19 +20,23 @@ import RolesSeeder from '@core/seeders/roles.seeder';
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
         name: 'default',
-        dropSchema: true,
+        dropSchema: false,
       }),
-      // dataSource receives the configured DataSourceOptions
-      // and returns a Promise<DataSource>.
+
       dataSourceFactory: async (options) => {
-        const dataSource: DataSource & SeederOptions = await new DataSource(
-          options,
-        ).initialize();
-        await runSeeders(dataSource, {
-          seeds: [RolesSeeder],
-          factories: [],
-        });
-        return dataSource;
+        try {
+          const dataSource: DataSource & SeederOptions = await new DataSource(
+            options,
+          ).initialize();
+          await runSeeders(dataSource, {
+            seeds: [RolesSeeder, DepartamentSeeder],
+            factories: [],
+          });
+          return dataSource;
+        } catch (error) {
+          console.error('Error during seeding:', error);
+          throw error; // Rethrow the error to prevent the application from starting with a potentially incomplete database state.
+        }
       },
       inject: [ConfigService],
     }),

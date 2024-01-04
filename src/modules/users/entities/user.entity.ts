@@ -1,13 +1,12 @@
-
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
   ManyToOne,
   JoinColumn,
   BeforeInsert,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
@@ -30,7 +29,7 @@ export class User {
   lastName: string;
 
   @ApiProperty({ type: String })
-  @Column({ nullable: false })
+  @Column({ nullable: true, default: null })
   avatar: string;
 
   @ApiProperty({ enum: AllowedDocumentTypes })
@@ -61,6 +60,8 @@ export class User {
   @Column({ nullable: false })
   district: string;
 
+  /** Terms & Conditions */
+
   @ApiProperty({ type: Boolean })
   @Column({ nullable: false })
   termsAndConditions: boolean;
@@ -78,37 +79,22 @@ export class User {
   offersAndDiscounts: boolean;
 
   @ApiProperty({ type: String })
-  @Column({ nullable: false, select: false })
+  @Column({ nullable: false, select: true })
   password: string;
-  
-  @ApiProperty({ type: String })
-  @Column({
-    type: 'varchar',
-    length: 255,
-    nullable: true,
-    default: null,
-  })
-  token?: string;
+
+  /** DATETIME */
 
   @ApiProperty({ type: Date })
-  @Column({
-      name: 'created_at',
-      type: 'timestamp',
-      default: () => 'CURRENT_TIMESTAMP',
-  })
+  @CreateDateColumn()
   createdAt: Date;
 
   @ApiProperty({ type: Date })
-  @Column({
-      name: 'update_at',
-      type: 'timestamp',
-      default: null,
-  })
+  @UpdateDateColumn()
   updateAt: Date;
 
   @ApiProperty({ type: String })
   @ManyToOne(() => Role, (rol) => rol.users)
-  @JoinColumn({ name: 'rol_id' })
+  @JoinColumn({ name: 'roleId' })
   rol: Role;
 
   @BeforeInsert()
