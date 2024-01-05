@@ -36,8 +36,10 @@ export class AuthController {
   }
 
   @Post('resend-otp')
-  resendOtp(@Body() validateOtp: ResendOtpDto) {
-    return this.otpService.resendOtp(validateOtp.userId);
+  async resendOtp(@Body() validateOtp: ResendOtpDto) {
+    await this.otpService.resendOtp(validateOtp.userId);
+
+    return 'ok';
   }
 
   @Post()
