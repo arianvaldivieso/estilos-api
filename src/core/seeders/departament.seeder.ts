@@ -5,7 +5,7 @@ import {
   departaments,
   districts,
   provinces,
-} from '@core/seeders/seeders-data/departament.data';
+} from 'core/seeders/seeders-data/departament.data';
 import { Departament } from 'modules/departament/entities/departament.entity';
 import { Province } from 'modules/province/entities/province.entity';
 import { District } from 'modules/district/entities/district.entity';

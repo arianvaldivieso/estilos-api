@@ -14,8 +14,8 @@ import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { AuthGuard } from 'modules/auth/auth.guard';
-import { StandardResponseInterceptor } from '@core/responses/standard-response.interceptor';
-import { User } from '@core/auth/user.decorator';
+import { StandardResponseInterceptor } from 'core/responses/standard-response.interceptor';
+import { User } from 'core/auth/user.decorator';
 
 @Controller('transaction')
 @UseGuards(AuthGuard)

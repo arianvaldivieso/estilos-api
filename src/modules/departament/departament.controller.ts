@@ -11,7 +11,7 @@ import {
 import { DepartamentService } from './departament.service';
 import { CreateDepartamentDto } from './dto/create-departament.dto';
 import { UpdateDepartamentDto } from './dto/update-departament.dto';
-import { StandardResponseInterceptor } from '@core/responses/standard-response.interceptor';
+import { StandardResponseInterceptor } from 'core/responses/standard-response.interceptor';
 
 @Controller('departament')
 @UseInterceptors(StandardResponseInterceptor)

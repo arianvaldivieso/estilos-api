@@ -1,4 +1,4 @@
-import { RoleType } from '@core/enums/role-type.enum';
+import { RoleType } from 'core/enums/role-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'modules/users/entities/user.entity';
 import {

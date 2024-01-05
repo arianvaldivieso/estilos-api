@@ -3,9 +3,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SeederOptions, runSeeders } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 import { Module } from '@nestjs/common/decorators/modules';
-import RolesSeeder from '@core/seeders/roles.seeder';
-import DepartamentSeeder from '@core/seeders/departament.seeder';
-import PageSeeder from '@core/seeders/page-seeder';
+import RolesSeeder from 'core/seeders/roles.seeder';
+import DepartamentSeeder from 'core/seeders/departament.seeder';
+import PageSeeder from 'core/seeders/page-seeder';
 
 @Module({
   imports: [
