@@ -5,17 +5,20 @@ import { User } from '../entities/user.entity';
 import { FindOneOptions, Repository } from 'typeorm';
 import { lastValueFrom } from 'rxjs';
 import { from } from 'rxjs';
-import { log } from 'console';
 import { RolesService } from 'modules/roles/services/roles.service';
 import { Role } from 'modules/roles/entities/role.entity';
 import { ValidateDto } from 'modules/auth/dto/validate.dto';
+import { OtpServiceService } from './otp.service.service';
+import { TwilioService } from './twilio.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private _usersRepository: Repository<User>,
-    private _roleService: RolesService,
+    private usersRepository: Repository<User>,
+    private roleService: RolesService,
+    private otpService: OtpServiceService,
+    private twilioService: TwilioService,
   ) {}
 
   async validateUniqueField(email, documentNumber, cellPhone) {
@@ -50,9 +53,16 @@ export class UsersService {
     const newUser = Object.assign(new User(), createUserDto);
     const roleName = createUserDto.role;
 
-    const role: Role = await this._roleService.findOneByName(roleName);
+    const role: Role = await this.roleService.findOneByName(roleName);
     newUser.rol = role;
-    return await this._usersRepository.save(newUser);
+    const user = await this.usersRepository.save(newUser);
+
+    const otp = await this.otpService.createOtp(user, 5);
+
+    const messageBody = `Tu código de verificación es: ${otp.otp}. No compartas este código con nadie.`;
+    this.twilioService.sendSMS(createUserDto.cellPhone, messageBody);
+
+    return user;
   }
 
   async validateUser(validateDto: ValidateDto) {
@@ -72,19 +82,19 @@ export class UsersService {
       options.relations = ['sentTransactions', 'receivedTransactions'];
     }
 
-    return await lastValueFrom(from(this._usersRepository.findOne(options)));
+    return await lastValueFrom(from(this.usersRepository.findOne(options)));
   }
 
   public async findOneByEmail(email: string): Promise<User> {
     return await lastValueFrom(
-      from(this._usersRepository.findOne({ where: { email: email } })),
+      from(this.usersRepository.findOne({ where: { email: email } })),
     );
   }
 
   public async findOneByDocument(documentNumber: string): Promise<User> {
     return await lastValueFrom(
       from(
-        this._usersRepository.findOne({
+        this.usersRepository.findOne({
           where: { documentNumber: documentNumber },
         }),
       ),
@@ -94,7 +104,7 @@ export class UsersService {
   public async findOneByPhone(cellPhone: string): Promise<User> {
     return await lastValueFrom(
       from(
-        this._usersRepository.findOne({
+        this.usersRepository.findOne({
           where: { cellPhone: cellPhone },
         }),
       ),
@@ -102,7 +112,7 @@ export class UsersService {
   }
 
   async findAll() {
-    const users = await lastValueFrom(from(this._usersRepository.find()));
+    const users = await lastValueFrom(from(this.usersRepository.find()));
     return users;
   }
 }

@@ -13,6 +13,7 @@ export class CreateUserDto {
   @IsString()
   firstName: string;
 
+  //TODO: no es obligatorio
   @IsNotEmpty()
   @IsString()
   middleName: string;
@@ -21,6 +22,7 @@ export class CreateUserDto {
   @IsString()
   lastName: string;
 
+  //TODO: no es obligatorio
   @IsNotEmpty()
   @IsString()
   secondLastName: string;
