@@ -1,10 +1,12 @@
 import { Departament } from 'modules/departament/entities/departament.entity';
+import { District } from 'modules/district/entities/district.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -20,6 +22,9 @@ export class Province {
   @ManyToOne(() => Departament, (departament) => departament.provinces)
   @JoinColumn({ name: 'departamentId' })
   departament: Departament;
+
+  @OneToMany(() => District, (district) => district.province)
+  districts: District[];
 
   @CreateDateColumn()
   createdAt: Date;
