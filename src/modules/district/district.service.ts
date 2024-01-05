@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDistrictDto } from './dto/create-district.dto';
-import { UpdateDistrictDto } from './dto/update-district.dto';
 import { from, lastValueFrom } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { District } from './entities/district.entity';
