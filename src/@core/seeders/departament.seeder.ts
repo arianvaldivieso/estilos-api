@@ -16,8 +16,7 @@ export default class DepartamentSeeder implements Seeder {
     factoryManager: SeederFactoryManager,
   ): Promise<any> {
     /** Departaments */
-
-    const departamentRepository = dataSource.getRepository(Departament);
+    /*  const departamentRepository = dataSource.getRepository(Departament);
 
     for (let ind = 0; ind < departaments.length; ind++) {
       const rol = await departamentRepository.findOneBy({
@@ -34,11 +33,9 @@ export default class DepartamentSeeder implements Seeder {
           Logger.error(error);
         }
       }
-    }
-
+    } */
     /** Provinces */
-
-    const provinceRepository = dataSource.getRepository(Province);
+    /* const provinceRepository = dataSource.getRepository(Province);
 
     for (let ind = 0; ind < provinces.length; ind++) {
       const province = await provinceRepository.findOneBy({
@@ -46,7 +43,7 @@ export default class DepartamentSeeder implements Seeder {
       });
 
       if (!province) {
-        province = {
+        let province = {
           ...provinces[ind],
         };
 
@@ -57,11 +54,9 @@ export default class DepartamentSeeder implements Seeder {
           Logger.error(error);
         }
       }
-    }
-
+    } */
     /** districts */
-
-    const districtRepository = dataSource.getRepository(District);
+    /* const districtRepository = dataSource.getRepository(District);
 
     for (let ind = 0; ind < districts.length; ind++) {
       const rol = await districtRepository.findOneBy({
@@ -76,6 +71,6 @@ export default class DepartamentSeeder implements Seeder {
           Logger.error(error);
         }
       }
-    }
+    } */
   }
 }

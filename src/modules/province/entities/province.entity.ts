@@ -1,27 +1,29 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { Departament } from 'modules/departament/entities/departament.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
 export class Province {
-  @ApiProperty({ type: Number })
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty({ type: String })
   @Column({ type: String })
   name: string;
 
-  @ApiProperty({ type: Date })
+  @ManyToOne(() => Departament, (departament) => departament.provinces)
+  @JoinColumn({ name: 'departamentId' })
+  departament: Departament;
+
   @CreateDateColumn()
   createdAt: Date;
 
-  @ApiProperty({ type: Date })
   @UpdateDateColumn()
   updateAt: Date;
 }
