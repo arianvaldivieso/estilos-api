@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProvinceDto } from './dto/create-province.dto';
-import { UpdateProvinceDto } from './dto/update-province.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Province } from './entities/province.entity';
 import { Repository } from 'typeorm';
