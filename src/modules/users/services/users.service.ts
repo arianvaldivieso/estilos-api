@@ -18,7 +18,6 @@ export class UsersService {
     private usersRepository: Repository<User>,
     private roleService: RolesService,
     private otpService: OtpService,
-    private twilioService: TwilioService,
   ) {}
 
   async validateUniqueField(email, documentNumber, cellPhone) {
@@ -57,10 +56,7 @@ export class UsersService {
     newUser.rol = role;
     const user = await this.usersRepository.save(newUser);
 
-    const otp = await this.otpService.createOtp(user, 5);
-
-    const messageBody = `Tu código de verificación es: ${otp.otp}. No compartas este código con nadie.`;
-    this.twilioService.sendSMS(createUserDto.cellPhone, messageBody);
+    this.otpService.sendOtp(user, createUserDto.cellPhone, createUserDto.email);
 
     return user;
   }

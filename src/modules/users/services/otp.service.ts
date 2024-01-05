@@ -10,6 +10,8 @@ import { Otp } from '../entities/otp.entity';
 import * as moment from 'moment';
 import { User } from '../entities/user.entity';
 import { from, lastValueFrom } from 'rxjs';
+import { TwilioService } from './twilio.service';
+import { UsersService } from './users.service';
 
 @Injectable()
 export class OtpService {
@@ -17,6 +19,9 @@ export class OtpService {
     @InjectRepository(Otp)
     private otpRepository: Repository<Otp>,
     @InjectRepository(User) private userRepository: Repository<User>,
+
+    private twilioService: TwilioService,
+    //private userService: UsersService,
   ) {}
 
   async createOtp(user: User, expirationMinutes: number): Promise<Otp> {
@@ -73,5 +78,16 @@ export class OtpService {
     await this.otpRepository.remove(latestOtp);
 
     return true;
+  }
+
+  async sendOtp(user, cellPhone, email) {
+    const otp = await this.createOtp(user, 5);
+    const messageBody = `Tu código de verificación es: ${otp.otp}. No compartas este código con nadie.`;
+    this.twilioService.sendSMS(cellPhone, messageBody);
+  }
+
+  async resendOtp(userId: number) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    await this.sendOtp(user, user.cellPhone, user.email);
   }
 }

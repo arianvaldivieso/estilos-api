@@ -5,6 +5,7 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
 } from 'class-validator';
 
@@ -13,17 +14,15 @@ export class CreateUserDto {
   @IsString()
   firstName: string;
 
-  //TODO: no es obligatorio
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  middleName: string;
+  middleName: string | null;
 
   @IsNotEmpty()
   @IsString()
   lastName: string;
 
-  //TODO: no es obligatorio
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   secondLastName: string;
 
