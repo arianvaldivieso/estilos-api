@@ -9,6 +9,7 @@ import { DepartamentModule } from './modules/departament/departament.module';
 import { ProvinceModule } from './modules/province/province.module';
 import { DistrictModule } from './modules/district/district.module';
 import { AuthModule } from 'modules/auth/auth.module';
+import { TransactionModule } from './modules/transaction/transaction.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AuthModule } from 'modules/auth/auth.module';
     ProvinceModule,
     DistrictModule,
     AuthModule,
+    TransactionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
