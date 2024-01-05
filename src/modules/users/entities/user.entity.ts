@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { AllowedDocumentTypes } from 'core/enums/document-type.enum';
 import { Role } from 'modules/roles/entities/role.entity';
 import { Transaction } from 'modules/transaction/entities/transaction.entity';
+import { Otp } from './otp.entity';
 
 @Entity()
 export class User {
@@ -81,6 +82,9 @@ export class User {
 
   @OneToMany(() => Transaction, (transaction) => transaction.receiver)
   receivedTransactions: Transaction[];
+
+  @OneToMany(() => Otp, (otp) => otp.user)
+  otps: Otp[];
 
   /** DATETIME */
 
