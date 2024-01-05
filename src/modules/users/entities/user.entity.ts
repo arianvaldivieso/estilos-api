@@ -15,6 +15,7 @@ import { AllowedDocumentTypes } from '@core/enums/document-type.enum';
 import { Role } from 'modules/roles/entities/role.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transaction } from 'modules/transaction/entities/transaction.entity';
+import { Card } from 'modules/card/entities/card.entity';
 
 @Entity()
 export class User {
@@ -89,6 +90,9 @@ export class User {
 
   @OneToMany(() => Transaction, (transaction) => transaction.receiver)
   receivedTransactions: Transaction[];
+
+  @OneToMany(() => Card, (card) => card.user)
+  cards?: Card[];
 
   /** DATETIME */
 
