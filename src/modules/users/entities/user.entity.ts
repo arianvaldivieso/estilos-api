@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
-import { AllowedDocumentTypes } from '@core/enums/document-type.enum';
+import { AllowedDocumentTypes } from 'core/enums/document-type.enum';
 import { Role } from 'modules/roles/entities/role.entity';
 import { Transaction } from 'modules/transaction/entities/transaction.entity';
 

@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
 import { ProvinceService } from './province.service';
-import { StandardResponseInterceptor } from '@core/responses/standard-response.interceptor';
+import { StandardResponseInterceptor } from 'core/responses/standard-response.interceptor';
 
 @Controller('province')
 @UseInterceptors(StandardResponseInterceptor)

@@ -1,5 +1,5 @@
-import { AllowedDocumentTypes } from '@core/enums/document-type.enum';
-import { AllowedRoleTypes } from '@core/enums/role-type.enum';
+import { AllowedDocumentTypes } from 'core/enums/document-type.enum';
+import { AllowedRoleTypes } from 'core/enums/role-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,

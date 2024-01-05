@@ -1,4 +1,4 @@
-import { StandardResponseInterceptor } from '@core/responses/standard-response.interceptor';
+import { StandardResponseInterceptor } from 'core/responses/standard-response.interceptor';
 import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { AuthService } from './auth.service';

@@ -1,4 +1,4 @@
-import { AllowedDocumentTypes } from '@core/enums/document-type.enum';
+import { AllowedDocumentTypes } from 'core/enums/document-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
