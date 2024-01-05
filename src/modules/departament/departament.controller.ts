@@ -14,6 +14,7 @@ import { UpdateDepartamentDto } from './dto/update-departament.dto';
 import { StandardResponseInterceptor } from '@core/responses/standard-response.interceptor';
 
 @Controller('departament')
+@UseInterceptors(StandardResponseInterceptor)
 export class DepartamentController {
   constructor(private readonly _departamentService: DepartamentService) {}
 
@@ -23,7 +24,6 @@ export class DepartamentController {
   }
 
   @Get()
-  @UseInterceptors(StandardResponseInterceptor)
   async findAll() {
     return await this._departamentService.findAll();
   }

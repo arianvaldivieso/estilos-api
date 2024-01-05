@@ -1,27 +1,27 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { Province } from 'modules/province/entities/province.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
 export class Departament {
-  @ApiProperty({ type: Number })
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty({ type: String })
   @Column({ type: String })
   name: string;
 
-  @ApiProperty({ type: Date })
+  @OneToMany(() => Province, (province) => province.departament)
+  provinces: Province[];
+
   @CreateDateColumn()
   createdAt: Date;
 
-  @ApiProperty({ type: Date })
   @UpdateDateColumn()
   updateAt: Date;
 }
