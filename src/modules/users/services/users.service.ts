@@ -8,7 +8,7 @@ import { from } from 'rxjs';
 import { RolesService } from 'modules/roles/services/roles.service';
 import { Role } from 'modules/roles/entities/role.entity';
 import { ValidateDto } from 'modules/auth/dto/validate.dto';
-import { OtpServiceService } from './otp.service.service';
+import { OtpService } from './otp.service';
 import { TwilioService } from './twilio.service';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private roleService: RolesService,
-    private otpService: OtpServiceService,
+    private otpService: OtpService,
     private twilioService: TwilioService,
   ) {}
 
