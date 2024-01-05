@@ -24,13 +24,13 @@ export class User {
   @Column({ nullable: false })
   firstName: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   middleName: string;
 
   @Column({ nullable: false })
   lastName: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   secondLastName: string;
 
   @Column({ nullable: true, default: null })

@@ -5,8 +5,9 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from 'modules/users/services/users.service';
 import { ValidateDto } from './dto/validate.dto';
-import { ValidateOtpDto } from './dto/validate-otp.dto';
+import { ResendOtpDto } from './dto/resend-otp.dto';
 import { OtpService } from 'modules/users/services/otp.service';
+import { ValidateOtpDto } from './dto/validate-otp.dto';
 
 @Controller('auth')
 @UseInterceptors(StandardResponseInterceptor)
@@ -32,6 +33,11 @@ export class AuthController {
   @Post('validate-otp')
   validateOtp(@Body() validateOtp: ValidateOtpDto) {
     return this.otpService.validateOtp(validateOtp.userId, validateOtp.otp);
+  }
+
+  @Post('resend-otp')
+  resendOtp(@Body() validateOtp: ResendOtpDto) {
+    return this.otpService.resendOtp(validateOtp.userId);
   }
 
   @Post()
