@@ -5,7 +5,7 @@ import {
   departaments,
   districts,
   provinces,
-} from '@core/seeders/seeders-data/departament.data';
+} from 'core/seeders/seeders-data/departament.data';
 import { Departament } from 'modules/departament/entities/departament.entity';
 import { Province } from 'modules/province/entities/province.entity';
 import { District } from 'modules/district/entities/district.entity';
@@ -16,8 +16,7 @@ export default class DepartamentSeeder implements Seeder {
     factoryManager: SeederFactoryManager,
   ): Promise<any> {
     /** Departaments */
-
-    const departamentRepository = dataSource.getRepository(Departament);
+    /*  const departamentRepository = dataSource.getRepository(Departament);
 
     for (let ind = 0; ind < departaments.length; ind++) {
       const rol = await departamentRepository.findOneBy({
@@ -34,18 +33,20 @@ export default class DepartamentSeeder implements Seeder {
           Logger.error(error);
         }
       }
-    }
-
+    } */
     /** Provinces */
-
-    const provinceRepository = dataSource.getRepository(Province);
+    /* const provinceRepository = dataSource.getRepository(Province);
 
     for (let ind = 0; ind < provinces.length; ind++) {
-      const rol = await provinceRepository.findOneBy({
+      const province = await provinceRepository.findOneBy({
         name: provinces[ind].name,
       });
 
-      if (!rol) {
+      if (!province) {
+        let province = {
+          ...provinces[ind],
+        };
+
         try {
           const newprovince = provinceRepository.create(provinces[ind]);
           await provinceRepository.save(newprovince);
@@ -53,11 +54,9 @@ export default class DepartamentSeeder implements Seeder {
           Logger.error(error);
         }
       }
-    }
-
+    } */
     /** districts */
-
-    const districtRepository = dataSource.getRepository(District);
+    /* const districtRepository = dataSource.getRepository(District);
 
     for (let ind = 0; ind < districts.length; ind++) {
       const rol = await districtRepository.findOneBy({
@@ -72,6 +71,6 @@ export default class DepartamentSeeder implements Seeder {
           Logger.error(error);
         }
       }
-    }
+    } */
   }
 }
