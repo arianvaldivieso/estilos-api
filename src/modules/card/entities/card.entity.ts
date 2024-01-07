@@ -1,5 +1,5 @@
-import { Status } from '@core/enums/card-status.enum';
-import { CardType } from '@core/enums/card-type.enum';
+import { Status } from 'core/enums/card-status.enum';
+import { CardType } from 'core/enums/card-type.enum';
 import { User } from 'modules/users/entities/user.entity';
 import {
   Entity,

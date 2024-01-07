@@ -15,7 +15,7 @@ import { UsersService } from 'modules/users/services/users.service';
 import { from, lastValueFrom } from 'rxjs';
 import { XmlsService } from './xmls.service';
 import axios from 'axios';
-import { CardType } from '@core/enums/card-type.enum';
+import { CardType } from 'core/enums/card-type.enum';
 import { ListMovementCardDto } from '../dto/list-movement.dto';
 
 @Injectable()

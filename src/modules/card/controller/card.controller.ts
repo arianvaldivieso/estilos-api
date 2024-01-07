@@ -2,11 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Logger, UseGuards, U
 import { CardService } from '../services/card.service';
 import { CreateCardDto } from '../dto/create-card.dto';
 import { UpdateCardDto } from '../dto/update-card.dto';
-import { User } from '@core/auth/user.decorator';
+import { User } from 'core/auth/user.decorator';
 import { Card } from '../entities/card.entity';
-import { CardType } from '@core/enums/card-type.enum';
+import { CardType } from 'core/enums/card-type.enum';
 import { ListMovementCardDto } from '../dto/list-movement.dto';
-import { StandardResponseInterceptor } from '@core/responses/standard-response.interceptor';
+import { StandardResponseInterceptor } from 'core/responses/standard-response.interceptor';
 import { AuthGuard } from 'modules/auth/auth.guard';
 
 @Controller('card')

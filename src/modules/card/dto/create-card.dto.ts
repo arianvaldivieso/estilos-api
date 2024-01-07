@@ -1,4 +1,4 @@
-import { CardType } from "@core/enums/card-type.enum";
+import { CardType } from "core/enums/card-type.enum";
 import { IsNumber, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateCardDto {
