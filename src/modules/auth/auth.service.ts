@@ -33,7 +33,6 @@ export class AuthService {
    */
   async signIn(
     documentNumber: string,
-    documentType: string,
     pass: string,
   ): Promise<{ access_token: string }> {
     const user = await this._usersService.findOneByDocument(documentNumber);
