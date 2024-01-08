@@ -6,6 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 
 import * as bcrypt from 'bcrypt';
+import { User } from 'modules/users/entities/user.entity';
 import { UsersService } from 'modules/users/services/users.service';
 
 /**
@@ -34,7 +35,7 @@ export class AuthService {
   async signIn(
     documentNumber: string,
     pass: string,
-  ): Promise<{ access_token: string }> {
+  ): Promise<{ access_token: string; user: User }> {
     const user = await this._usersService.findOneByDocument(documentNumber);
 
     if (!user) {
@@ -50,6 +51,7 @@ export class AuthService {
     const payload = { sub: user.id, documentNumber: user.documentNumber };
     return {
       access_token: await this.jwtService.signAsync(payload),
+      user: user,
     };
   }
 
