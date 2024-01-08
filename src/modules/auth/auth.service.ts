@@ -53,4 +53,14 @@ export class AuthService {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
+
+  async validateDocument(documentNumber: string, documentType: string) {
+    const user = await this._usersService.findOneByDocument(documentNumber);
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    return 'ok';
+  }
 }

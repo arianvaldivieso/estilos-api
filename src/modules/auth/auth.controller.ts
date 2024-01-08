@@ -8,6 +8,7 @@ import { ResendOtpDto } from './dto/resend-otp.dto';
 import { OtpService } from 'modules/users/services/otp.service';
 import { ValidateOtpDto } from './dto/validate-otp.dto';
 import { UsersService } from 'modules/users/services/users.service';
+import { ValidateDocumentDto } from './dto/validate-document.dto';
 
 @Controller('auth')
 @UseInterceptors(StandardResponseInterceptor)
@@ -38,8 +39,15 @@ export class AuthController {
   @Post('resend-otp')
   async resendOtp(@Body() validateOtp: ResendOtpDto) {
     await this.otpService.resendOtp(validateOtp.userId);
-
     return 'ok';
+  }
+
+  @Post('validate-document')
+  validateDocument(@Body() validateDocument: ValidateDocumentDto) {
+    return this.authService.validateDocument(
+      validateDocument.documentNumber,
+      validateDocument.documentType,
+    );
   }
 
   @Post()
@@ -49,7 +57,7 @@ export class AuthController {
     return this.authService.signIn(
       createUserDto.documentNumber,
       createUserDto.documentType,
-      '123456789',
+      createUserDto.password,
     );
   }
 }

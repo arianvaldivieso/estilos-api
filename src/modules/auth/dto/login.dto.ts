@@ -12,4 +12,8 @@ export class LoginDto {
   @IsNotEmpty()
   @IsString()
   documentNumber: string;
+
+  @IsNotEmpty()
+  @IsString()
+  password: string;
 }
