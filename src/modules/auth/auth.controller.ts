@@ -52,11 +52,8 @@ export class AuthController {
 
   @Post()
   login(@Body() createUserDto: LoginDto) {
-    console.log(createUserDto);
-
     return this.authService.signIn(
       createUserDto.documentNumber,
-      createUserDto.documentType,
       createUserDto.password,
     );
   }
