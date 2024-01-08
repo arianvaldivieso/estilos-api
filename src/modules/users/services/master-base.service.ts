@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
+import { Injectable } from '@nestjs/common';
 
 /**
  * Service for interacting with the MasterBase API and sending emails.
