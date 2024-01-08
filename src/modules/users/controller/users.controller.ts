@@ -18,7 +18,7 @@ export class UsersController {
   @UseInterceptors(StandardResponseInterceptor)
   @Get('profile')
   getProfile(@Request() req) {
-    return req.user;
+    return this._usersService.findOneById(req.user.id, true, ['rol']);
   }
 
   @Get()
@@ -29,6 +29,5 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return { message: id };
-    //return this._usersService.findOne(+id);
   }
 }
