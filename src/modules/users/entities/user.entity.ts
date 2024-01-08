@@ -49,16 +49,16 @@ export class User {
   @Column({ nullable: false, unique: true })
   email: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   birthdate: Date;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   department: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   province: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   district: string;
 
   /** Terms & Conditions */

@@ -12,6 +12,14 @@ import { AuthModule } from 'modules/auth/auth.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { CardModule } from './modules/card/card.module';
+import { OnApplicationBootstrap } from '@nestjs/common';
+import { SeedingService } from 'core/seeders/services/seedingService';
+import RolesSeeder from 'core/seeders/roles.seeder';
+import PageSeeder from 'core/seeders/page-seeder';
+import DepartamentSeeder from 'core/seeders/departament.seeder';
+import UserSeeder from 'core/seeders/user.seeder';
+import AxiosModule from 'axios';
+import { SoapModule } from 'nestjs-soap';
 
 @Module({
   imports: [
@@ -30,6 +38,19 @@ import { CardModule } from './modules/card/card.module';
     CardModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    SeedingService,
+    RolesSeeder,
+    PageSeeder,
+    DepartamentSeeder,
+    UserSeeder,
+  ],
 })
-export class AppModule {}
+export class AppModule implements OnApplicationBootstrap {
+  constructor(private readonly seedingService: SeedingService) {}
+
+  async onApplicationBootstrap(): Promise<void> {
+    await this.seedingService.seed();
+  }
+}

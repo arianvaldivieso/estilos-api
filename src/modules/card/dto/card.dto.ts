@@ -1,7 +1,7 @@
 import { CardType } from "core/enums/card-type.enum";
-import { IsNumber, IsNotEmpty, IsString } from "class-validator";
+import { IsNumber, IsNotEmpty, IsString, IsEnum, IsOptional } from "class-validator";
 
-export class CreateCardDto {
+export class AssociateCardDto {
   @IsNumber()
   @IsNotEmpty()
   receiverId: number;
@@ -12,10 +12,7 @@ export class CreateCardDto {
 
   @IsString()
   @IsNotEmpty()
-  name: string;
-
-  @IsString()
-  @IsNotEmpty()
+  @IsEnum(CardType)
   type: CardType;
 
   @IsString()
@@ -24,5 +21,6 @@ export class CreateCardDto {
 
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
   number_account: string;
 }

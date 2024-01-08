@@ -23,22 +23,6 @@ import PageSeeder from 'core/seeders/page-seeder';
         name: 'default',
         dropSchema: false,
       }),
-
-      dataSourceFactory: async (options) => {
-        try {
-          const dataSource: DataSource & SeederOptions = await new DataSource(
-            options,
-          ).initialize();
-          await runSeeders(dataSource, {
-            seeds: [RolesSeeder, DepartamentSeeder, PageSeeder],
-            factories: [],
-          });
-          return dataSource;
-        } catch (error) {
-          console.error('Error during seeding:', error);
-          throw error; // Rethrow the error to prevent the application from starting with a potentially incomplete database state.
-        }
-      },
       inject: [ConfigService],
     }),
   ],

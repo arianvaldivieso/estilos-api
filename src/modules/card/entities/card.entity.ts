@@ -1,4 +1,4 @@
-import { Status } from 'core/enums/card-status.enum';
+import { CardStatus } from 'core/enums/card-status.enum';
 import { CardType } from 'core/enums/card-type.enum';
 import { User } from 'modules/users/entities/user.entity';
 import {
@@ -18,9 +18,6 @@ export class Card {
 
   @Column({ nullable: true })
   card_number: string;
-
-  @Column({ nullable: true })
-  name: string;
   
   @Column({ nullable: true })
   number_account: string;
@@ -28,8 +25,8 @@ export class Card {
   @Column({ nullable: true })
   type: CardType;
 
-  @Column({ default: Status.PENDING })
-  status: Status;
+  @Column({ default: CardStatus.PENDING })
+  status: CardStatus;
 
   @CreateDateColumn()
   createdAt: Date;

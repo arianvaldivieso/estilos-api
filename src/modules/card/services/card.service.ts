@@ -1,10 +1,12 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
   NotImplementedException,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { CreateCardDto } from '../dto/create-card.dto';
+import { AssociateCardDto } from '../dto/card.dto';
 import { UpdateCardDto } from '../dto/update-card.dto';
 import { createHash } from 'node:crypto';
 import { User } from 'modules/users/entities/user.entity';
@@ -16,18 +18,23 @@ import { from, lastValueFrom } from 'rxjs';
 import { XmlsService } from './xmls.service';
 import axios from 'axios';
 import { CardType } from 'core/enums/card-type.enum';
-import { ListMovementCardDto } from '../dto/list-movement.dto';
+import { CardStatus } from 'core/enums/card-status.enum';
+import { DataCard } from '../dto/get-data-card.dto';
+import { RechargeCardDto } from '../dto/recharge.dto';
 
 @Injectable()
 export class CardService {
   private currentUser: User;
   private attributes: FindOptionsSelectByString<Card> = [
-    'name',
     'card_number',
     'number_account',
     'id',
+    'type',
+    'status',
   ];
 
+  private readonly logger: Logger = new Logger(CardService.name);
+  
   constructor(
     @InjectRepository(Card)
     private _cardRepository: Repository<Card>,
@@ -35,45 +42,69 @@ export class CardService {
     private readonly _xmlsService: XmlsService,
   ) {}
 
-  async create(createCardDto: CreateCardDto, user): Promise<Card> {
+  async associate(associateCardDto: AssociateCardDto, user): Promise<Card> {
     try {
       this.currentUser = user;
-      const receiverId = createCardDto.receiverId;
+      const receiverId = associateCardDto.receiverId;
       const receiver = await this._usersService.findOneById(receiverId);
 
+      //validation of existence of the id within the database
       if (!receiver) {
         throw new NotFoundException('Usuario no encontrado');
       }
 
       const userHasCard = await this.getCardByCardNumber(
-        createCardDto.card_number,
+        associateCardDto.card_number,
       );
 
+      //validation of existence of the card number
       if (userHasCard) {
         throw new BadRequestException('Ya existe una tarjeta con ese número');
       }
 
-      if (createCardDto.type === CardType.STYLE_CARD) {
-        const typeHasCard = await this.getCardByType(createCardDto.type);
+      const card = await this.getCardByType(associateCardDto.type);
 
-        if (typeHasCard) {
+      //validates the status of the card within the system
+      if (card) {
+        if (
+          card.status === CardStatus.APPROVED ||
+          card.status === CardStatus.IN_PROCCESS ||
+          card.status === CardStatus.PENDING
+        ) {
           throw new BadRequestException('Ya posee una tarjeta estilo');
         }
       }
 
-      const payloadCard: Card = new Card();
-      payloadCard.card_number = createCardDto.card_number;
-      payloadCard.number_account = createCardDto.number_account;
-      payloadCard.name = createCardDto.name;
-      payloadCard.user = receiver;
-      payloadCard.type = createCardDto.type;
+      //validates if the card is a style card
+      let validateCard: DataCard;
 
+      if (associateCardDto.type === CardType.STYLE_CARD) {
+        validateCard = await this.dataCardStyles(
+          associateCardDto.password,
+          associateCardDto.card_number,
+          receiver.documentNumber,
+        );
+      }
+
+      const payloadCard: Card = new Card();
+      payloadCard.card_number = associateCardDto.card_number;
+      payloadCard.user = receiver;
+      payloadCard.type = associateCardDto.type;
+      payloadCard.number_account = validateCard.number_account;
+
+      if (associateCardDto.type === CardType.STYLE_CARD && validateCard) {
+        payloadCard.number_account = validateCard.number_account;
+      } else if (associateCardDto.number_account) {
+        payloadCard.number_account = associateCardDto.number_account;
+      }
       const cardData = await this._cardRepository.save(payloadCard);
 
+      //delete data
+      delete cardData.user;
+
       return cardData;
-      
     } catch (error) {
-      throw new NotImplementedException(JSON.stringify(error));
+      throw new NotImplementedException(error);
     }
   }
 
@@ -85,7 +116,8 @@ export class CardService {
           select: this.attributes,
           where: {
             user: {
-              id: user.id,
+              //id: user.id,
+              id: 2,
             },
           },
         }),
@@ -136,7 +168,8 @@ export class CardService {
         this._cardRepository.findOne({
           where: {
             user: {
-              id: user.id,
+              //id: user.id,
+              id: 2,
             },
           },
         }),
@@ -156,19 +189,8 @@ export class CardService {
     );
   }
 
-  async dataCardStyles(
-    password: string,
-    card_number: string,
-    user: User,
-    dni: string = '99999999',
-  ) {
+  async dataCardStyles(password: string, card_number: string, dni: string) {
     try {
-      const card = await this.getCardByUserId(user);
-
-      if (!card) {
-        throw new NotFoundException('Credenciales invalidas');
-      }
-
       const data = await this._xmlsService.getCardData(
         dni,
         card_number,
@@ -177,10 +199,9 @@ export class CardService {
 
       const config = {
         method: 'post',
-        maxBodyLength: Infinity,
-        url: 'http://wap.nuestrafamilia.com.pe:8003/Rp3.Web.Estilos.Ecommerce/ConsultaCredito.asmx?op=ObtenerObtenerDatosTarjeta',
+        url: 'https://wap.nuestrafamilia.com.pe/Rp3.Web.Estilos.Ecommerce/ConsultaCredito.asmx?op=ObtenerObtenerDatosTarjeta',
         headers: {
-          'Content-Type': 'text/xml',
+          'Content-Type': 'text/xml; charset=utf-8',
         },
         data: data,
       };
@@ -191,45 +212,74 @@ export class CardService {
       );
       const parsedBody = await this._xmlsService.parseDataGetCard(responseBody);
 
-      return parsedBody;
+      if (!parsedBody.status) {
+        throw new UnauthorizedException(
+          'Ha ocurrido un error al momento de procesar esta solicitud le recomendamos ponerse en contacto con los proveedores de servicios de su tarjeta',
+        );
+      }
+
+      return parsedBody.data;
     } catch (error: unknown) {
       return null;
     }
   }
 
-  async listMovements(listMovementCardDto: ListMovementCardDto, user: User) {
+  async listMovements(listMovementCardDto: AssociateCardDto, user: User) {
     try {
+      const receiverId = listMovementCardDto.receiverId;
+      const receiver = await this._usersService.findOneById(receiverId);
+
+      //validation of existence of the id within the database
+      if (!receiver) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+
       const userHasCard = await this.getCardByCardNumber(
         listMovementCardDto.card_number,
       );
 
       if (!userHasCard) {
         throw new NotFoundException('Tarjeta no encontrada');
+      } else {
+        if (
+          userHasCard.status === CardStatus.IN_PROCCESS ||
+          userHasCard.status === CardStatus.PENDING
+        ) {
+          throw new BadRequestException(
+            'La tarjeta no ha sido procesada, debido ha esto aun no podra ser utiliza dentro de nuestro sistema',
+          );
+        }
       }
 
       const cardData = await this.dataCardStyles(
         this.md5(listMovementCardDto.password),
         listMovementCardDto.card_number,
-        user,
-        user.documentNumber,
+        receiver.documentNumber,
       );
-      console.log("🚀 ~ file: card.service.ts:215 ~ CardService ~ listMovements ~ cardData:", JSON.stringify(cardData));
 
       const dates = this.getFormattedLast30Days();
 
-      const data = this._xmlsService.createSoapEnvelope(`
-        <tem:mxConsultaListadoMovimientos>
-          <tem:tnEmpresa>1</tem:tnEmpresa> <!-- Por defecto va 1 -->
-          <tem:tnCuenta>${cardData.data.number_account}</tem:tnCuenta> <!-- Número de cuenta estilos -->
-          <tem:tcDesde>${dates['startDate']}</tem:tcDesde> <!-- Fecha Inicio de consulta a buscar -->
-          <tem:tcHasta>${dates['endDate']}</tem:tcHasta> <!-- Fecha fin de consulta a buscar -->
-        </tem:mxConsultaListadoMovimientos>
-      `);
+      const data = `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+        <soapenv:Header/>
+        <soapenv:Body>
+            <tem:mxConsultaListadoMovimientos>
+              <!--Optional:-->
+              <tem:tnEmpresa>1</tem:tnEmpresa>
+              <!--Optional:-->
+              <tem:tnCuenta>${userHasCard.number_account}</tem:tnCuenta>
+              <!--Optional:-->
+              <tem:tcDesde>${dates['startDate']}</tem:tcDesde>
+              <!--Optional:-->
+              <tem:tcHasta>${dates['endDate']}</tem:tcHasta>
+            </tem:mxConsultaListadoMovimientos>
+        </soapenv:Body>
+      </soapenv:Envelope>
+      `;
 
       const config = {
         method: 'post',
-        maxBodyLength: Infinity,
-        url: 'http://tempuri.org/IEstilosTiendaVirtual/mxConsultaListadoMovimientos',
+        url: 'https://app.estilos.com.pe/Estilos.ServiceAppPagos/EstilosTiendaVirtual.svc?wsdl',
         headers: {
           'Content-Type': 'text/xml',
         },
@@ -237,17 +287,29 @@ export class CardService {
       };
 
       const response = await axios.request(config);
-      console.log(
-        '🚀 ~ file: card.service.ts:223 ~ CardService ~ listMovements ~ response:',
-        JSON.stringify(response),
+      this.logger.debug(`BUILD_RESPONSE::INIT ${response}`);
+
+      const responseBody = await this._xmlsService.parseXMLtoJSON(
+        response.data,
       );
 
-      //const movimiento = await this._xmlsService.parseConsultaListadoMovimientos(response)
+      /*const movimiento =
+        await this._xmlsService.parseConsultaListadoMovimientos(
+          response as SOAPResponse,
+        );
+      console.log(
+        '🚀 ~ file: card.service.ts:285 ~ CardService ~ listMovements ~ movimiento:',
+        movimiento,
+      );*/
 
       return {};
     } catch (error) {
-      throw new NotImplementedException(JSON.stringify(error));
+      throw new NotImplementedException(error);
     }
+    console.log(
+      '🚀 ~ file: card.service.ts:300 ~ CardService ~ listMovements ~ user.documentNumber:',
+      user.documentNumber,
+    );
   }
 
   async getFormattedLast30Days(): Promise<{
@@ -277,5 +339,187 @@ export class CardService {
     } catch (error) {
       return null;
     }
+  }
+
+  async pendingPayments(pendingPaymentCardDto: AssociateCardDto, user: User) {
+    try {
+      const receiverId = pendingPaymentCardDto.receiverId;
+      const receiver = await this._usersService.findOneById(receiverId);
+
+      //validation of existence of the id within the database
+      if (!receiver) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+
+      const userHasCard = await this.getCardByCardNumber(
+        pendingPaymentCardDto.card_number,
+      );
+      console.log(
+        '🚀 ~ file: card.service.ts:359 ~ CardService ~ pendingPayments ~ userHasCard:',
+        userHasCard,
+      );
+
+      if (!userHasCard) {
+        throw new NotFoundException('Tarjeta no encontrada');
+      } else {
+        if (
+          userHasCard.status === CardStatus.IN_PROCCESS ||
+          userHasCard.status === CardStatus.PENDING
+        ) {
+          throw new BadRequestException(
+            'La tarjeta no ha sido procesada, debido ha esto aun no podra ser utiliza dentro de nuestro sistema',
+          );
+        }
+      }
+
+      //validates if the card is a style card
+      let validateCard: DataCard;
+
+      if (pendingPaymentCardDto.type === CardType.STYLE_CARD) {
+        validateCard = await this.dataCardStyles(
+          pendingPaymentCardDto.password,
+          pendingPaymentCardDto.card_number,
+          receiver.documentNumber,
+        );
+      }
+
+      const data = this._xmlsService.getCheckOutstandingLetters(
+        userHasCard.number_account,
+      );
+      console.log(
+        '🚀 ~ file: card.service.ts:376 ~ CardService ~ pendingPayments ~ data:',
+        data,
+      );
+
+      const config = {
+        method: 'post',
+        url: 'https://app.estilos.com.pe/Estilos.ServiceAppPagos/EstilosTiendaVirtual.svc?wsdl',
+        headers: {
+          'Content-Type': 'text/xml',
+        },
+        data: data,
+      };
+
+      const response = await axios.request(config);
+      console.log(
+        '🚀 ~ file: card.service.ts:409 ~ CardService ~ response:',
+        response,
+      );
+
+      const responseBody = await this._xmlsService.parseXMLtoJSON(
+        response.data,
+      );
+
+      const result =
+        this._xmlsService.parseDataConsultaLetrasPendientesResult(response);
+      console.log(
+        '🚀 ~ file: card.service.ts:416 ~ CardService ~ result:',
+        result,
+      );
+
+      return result;
+    } catch (error) {
+      throw new NotImplementedException(error);
+    }
+  }
+
+  async recharge(rechargeCardDto: RechargeCardDto, user) {
+    try {
+      this.currentUser = user;
+      const receiverId = rechargeCardDto.receiverId;
+      const receiver = await this._usersService.findOneById(receiverId);
+
+      //validation of existence of the id within the database
+      if (!receiver) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+
+      const userHasCard = await this.findOne(rechargeCardDto.cardId);
+      //validation of existence of the card number
+      if (!userHasCard) {
+        throw new BadRequestException(
+          'El identificador recibido no se encuentra asoaciado a ninguna tarjeta',
+        );
+      }
+
+      if (
+        userHasCard.status === CardStatus.IN_PROCCESS ||
+        userHasCard.status === CardStatus.PENDING
+      ) {
+        throw new BadRequestException(
+          'La tarjeta no ha sido procesada, debido ha esto aun no podra ser utiliza dentro de nuestro sistema',
+        );
+      }
+
+      //validates if the card is a style card
+      let validateCard: DataCard;
+
+      if (userHasCard.type === CardType.STYLE_CARD) {
+        validateCard = await this.dataCardStyles(
+          rechargeCardDto.password,
+          userHasCard.card_number,
+          receiver.documentNumber,
+        );
+
+        if (validateCard.amount < rechargeCardDto.amount) {
+          throw new BadRequestException(
+            'El monto solicitado es mayor que el monto que contiene su tarjeta estilo',
+          );
+        }
+
+        //check balance card style
+        /*const result = await this.validateBalanceCardStyle(
+          userHasCard.number_account,
+        );
+*/
+        const transactionRegistration =
+          await this._xmlsService.transactionRegistration();
+        console.log(
+          '🚀 ~ file: card.service.ts:468 ~ CardService ~ recharge ~ transactionRegistration:',
+          transactionRegistration,
+        );
+        const config = {
+          method: 'post',
+          url: 'http://wap.nuestrafamilia.com.pe:8003/Estilos.ServiceTiendaVirtual_dev/EstilosTiendaVirtual.svc?wsdl',
+          headers: {
+            'Content-Type': 'text/xml',
+          },
+          data: transactionRegistration,
+        };
+
+        const resultTransactionResult = await axios.request(config);
+        console.log(
+          '🚀 ~ file: card.service.ts:484 ~ CardService ~ recharge ~ resultTransactionResult:',
+          resultTransactionResult,
+        );
+      }
+
+      return {};
+    } catch (error) {
+      throw new NotImplementedException(error);
+    }
+  }
+
+  async validateBalanceCardStyle(id: string) {
+    this.logger.debug('BUILD_RESPONSE::INIT');
+
+    const data = await this._xmlsService.checkGetBalance();
+    this.logger.debug(`BUILD_RESPONSE::INIT data ${data}`);
+
+    const config = {
+      method: 'post',
+      url: 'https://app.estilos.com.pe/Estilos.ServiceAppPagos/EstilosTiendaVirtual.svc',
+      headers: {
+        'Content-Type': 'text/xml; charset=utf-8',
+      },
+      data: data,
+    };
+
+    const response = await axios.request(config);
+    this.logger.debug(`BUILD_RESPONSE::INIT response ${response}`);
+
+    this.logger.debug('BUILD_RESPONSE::INIT');
+
+    return true;
   }
 }

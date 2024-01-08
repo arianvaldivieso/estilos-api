@@ -1,17 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Logger, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CardService } from '../services/card.service';
-import { CreateCardDto } from '../dto/create-card.dto';
+import { AssociateCardDto } from '../dto/card.dto';
 import { UpdateCardDto } from '../dto/update-card.dto';
 import { User } from 'core/auth/user.decorator';
 import { Card } from '../entities/card.entity';
 import { CardType } from 'core/enums/card-type.enum';
-import { ListMovementCardDto } from '../dto/list-movement.dto';
-import { StandardResponseInterceptor } from 'core/responses/standard-response.interceptor';
-import { AuthGuard } from 'modules/auth/auth.guard';
+import { RechargeCardDto } from '../dto/recharge.dto';
 
-@Controller('card')
-@UseGuards(AuthGuard)
-@UseInterceptors(StandardResponseInterceptor)
+@Controller('cards')
+//@UseGuards(AuthGuard)
+//@UseInterceptors(StandardResponseInterceptor)
 
 export class CardController {
   private readonly logger: Logger = new Logger(CardController.name);
@@ -19,8 +17,8 @@ export class CardController {
   constructor(private readonly _cardService: CardService) {}
 
   @Post()
-  async create(@Body() createCardDto: CreateCardDto, @User() user): Promise<Card> {
-    return await this._cardService.create(createCardDto, user);
+  async associate(@Body() associateCardDto: AssociateCardDto, @User() user): Promise<Card> {
+    return await this._cardService.associate(associateCardDto, user);
   }
 
   @Get()
@@ -59,8 +57,23 @@ export class CardController {
     return await this._cardService.getCardByType(type);
   }
 
+  @Get('getBalanceCardStyle/:id')
+  async validateBalanceCardStyle(@Param('id') id: string) {
+    return await this._cardService.validateBalanceCardStyle(id);
+  }
+
   @Post('list-movement')
-  async listMovements(@Body() listMovementCardDto: ListMovementCardDto, @User() user) {
+  async listMovements(@Body() listMovementCardDto: AssociateCardDto, @User() user) {
     return await this._cardService.listMovements(listMovementCardDto, user);
+  }
+
+  @Post('pending-payments')
+  async pendingPayments(@Body() pendingPayments: AssociateCardDto, @User() user) {
+    return await this._cardService.pendingPayments(pendingPayments, user);
+  }
+
+  @Post('recharge')
+  async recharge(@Body() rechargeCardDto: RechargeCardDto, @User() user) {
+    return await this._cardService.recharge(rechargeCardDto, user);
   }
 }

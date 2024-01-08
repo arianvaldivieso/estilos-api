@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from 'modules/users/users.module';
 import { Card } from './entities/card.entity';
 import { XmlsService } from './services/xmls.service';
+import { TransactionService } from 'modules/transaction/transaction.service';
 
 @Module({
   imports: [

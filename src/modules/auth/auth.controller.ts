@@ -47,7 +47,7 @@ export class AuthController {
     return this.authService.signIn(
       createUserDto.documentNumber,
       createUserDto.documentType,
-      '123456789',
+      '12345678',
     );
   }
 }

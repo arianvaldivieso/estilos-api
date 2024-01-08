@@ -1,6 +1,6 @@
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
-import { Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   departaments,
   districts,
@@ -10,11 +10,12 @@ import { Departament } from 'modules/departament/entities/departament.entity';
 import { Province } from 'modules/province/entities/province.entity';
 import { District } from 'modules/district/entities/district.entity';
 
+@Injectable()
 export default class DepartamentSeeder implements Seeder {
-  public async run(
-    dataSource: DataSource,
-    factoryManager: SeederFactoryManager,
-  ): Promise<any> {
+  
+  constructor(private dataSource: DataSource) { }
+
+  public async run(): Promise<any> {
     /** Departaments */
     /*  const departamentRepository = dataSource.getRepository(Departament);
 
