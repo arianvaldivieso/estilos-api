@@ -1,18 +1,14 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
   Param,
   UseInterceptors,
   UseGuards,
   Request,
 } from '@nestjs/common';
-import { UsersService } from '../services/users.service';
-import { CreateUserDto } from '../../auth/dto/create-user.dto';
 import { StandardResponseInterceptor } from 'core/responses/standard-response.interceptor';
-import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'modules/auth/auth.guard';
+import { UsersService } from '../services/users.service';
 
 @Controller('users')
 export class UsersController {

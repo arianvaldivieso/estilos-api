@@ -6,12 +6,12 @@ import {
 } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { UsersService } from 'modules/users/services/users.service';
 import { User } from 'modules/users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { from, lastValueFrom } from 'rxjs';
+import { UsersService } from 'modules/users/services/users.service';
 
 /**
  * Service for managing transactions.

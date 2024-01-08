@@ -12,6 +12,7 @@ import { AuthModule } from 'modules/auth/auth.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { FaqModule } from './modules/faq/faq.module';
+import { ContactModule } from './modules/contact/contact.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { FaqModule } from './modules/faq/faq.module';
     TransactionModule,
     AdminModule,
     FaqModule,
+    ContactModule,
   ],
   controllers: [AppController],
   providers: [AppService],
