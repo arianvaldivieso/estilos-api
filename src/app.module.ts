@@ -11,6 +11,7 @@ import { DistrictModule } from './modules/district/district.module';
 import { AuthModule } from 'modules/auth/auth.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { FaqModule } from './modules/faq/faq.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AdminModule } from './modules/admin/admin.module';
     AuthModule,
     TransactionModule,
     AdminModule,
+    FaqModule,
   ],
   controllers: [AppController],
   providers: [AppService],
