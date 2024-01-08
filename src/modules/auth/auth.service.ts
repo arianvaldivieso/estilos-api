@@ -1,8 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from 'modules/users/services/users.service';
 
 import * as bcrypt from 'bcrypt';
+import { UsersService } from 'modules/users/services/users.service';
 
 /**
  * Service for handling authentication-related tasks.
@@ -33,6 +37,10 @@ export class AuthService {
     pass: string,
   ): Promise<{ access_token: string }> {
     const user = await this._usersService.findOneByDocument(documentNumber);
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
 
     const isPasswordEqual: boolean = await bcrypt.compare(pass, user.password);
 

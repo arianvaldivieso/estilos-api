@@ -15,6 +15,7 @@ import { AllowedDocumentTypes } from 'core/enums/document-type.enum';
 import { Role } from 'modules/roles/entities/role.entity';
 import { Transaction } from 'modules/transaction/entities/transaction.entity';
 import { Otp } from './otp.entity';
+import { Contact } from 'modules/contact/entities/contact.entity';
 
 @Entity()
 export class User {
@@ -85,6 +86,9 @@ export class User {
 
   @OneToMany(() => Otp, (otp) => otp.user)
   otps: Otp[];
+
+  @OneToMany(() => Contact, (contact) => contact.owner)
+  contacts: Contact[];
 
   /** DATETIME */
 
