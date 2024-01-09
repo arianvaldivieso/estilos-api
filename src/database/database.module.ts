@@ -6,6 +6,7 @@ import { Module } from '@nestjs/common/decorators/modules';
 import RolesSeeder from 'core/seeders/roles.seeder';
 import DepartamentSeeder from 'core/seeders/departament.seeder';
 import PageSeeder from 'core/seeders/page-seeder';
+import ConfigSeeder from 'core/seeders/config.seeder';
 
 @Module({
   imports: [

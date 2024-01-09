@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { from, lastValueFrom } from 'rxjs';
 import { UsersService } from 'modules/users/services/users.service';
+import { ConfigService } from 'modules/admin/config/config.service';
 
 /**
  * Service for managing transactions.
@@ -21,12 +22,13 @@ export class TransactionService {
   /**
    * Constructor of the TransactionService.
    * @param {Repository<Transaction>} _transactionsRepository - Repository for the Transaction entity.
-   * @param {UsersService} _usersService - Service for managing users.
+   * @param {UsersService} usersService - Service for managing users.
    */
   constructor(
     @InjectRepository(Transaction)
     private _transactionsRepository: Repository<Transaction>,
-    private readonly _usersService: UsersService,
+    private readonly usersService: UsersService,
+    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -57,7 +59,7 @@ export class TransactionService {
   ): Promise<Transaction> {
     this.currentUser = user;
     const receiverId = createTransactionDto.receiverId;
-    const receiver = await this._usersService.findOneById(receiverId);
+    const receiver = await this.usersService.findOneById(receiverId);
     const sender = this.currentUser;
     const amount = createTransactionDto.amount;
     const balance = await this.calculateBalance(sender.id);
@@ -67,11 +69,18 @@ export class TransactionService {
     if (!receiver) {
       throw new BadRequestException('User not found');
     }
+
+    const comision = await this.configService.finOneByKeyAndModule(
+      'comision',
+      'transaction',
+    );
+
     const payloadTransaction = {
       senderId: sender.id,
       receiverId: receiver.id,
       amount: amount,
       status: 'complete',
+      comision: parseFloat(comision.value),
     };
     const transactionData =
       await this._transactionsRepository.save(payloadTransaction);
@@ -131,6 +140,7 @@ export class TransactionService {
     const transaction = new Transaction();
     Object.assign(transaction, data);
     transaction.setTransactionType(this.currentUser.id);
+    transaction.calculateComision();
     return transaction;
   }
 
@@ -140,7 +150,7 @@ export class TransactionService {
    * @returns {Promise<number>} - Promise resolved with the calculated balance.
    */
   async calculateBalance(userId: number): Promise<number> {
-    const user = await this._usersService.findOneById(userId, true);
+    const user = await this.usersService.findOneById(userId, true);
     const sentAmount = user.sentTransactions
       .filter((transaction) => transaction.status === 'complete')
       .reduce((total, transaction) => total + transaction.amount, 0);

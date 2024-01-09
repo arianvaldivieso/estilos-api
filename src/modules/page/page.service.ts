@@ -8,7 +8,7 @@ import { from, lastValueFrom } from 'rxjs';
  * Service for handling administrative tasks.
  */
 @Injectable()
-export class AdminService {
+export class PageService {
   /**
    * Constructor of the AdminService.
    * @param {Repository<Page>} pageRepository - Repository for the Page entity.

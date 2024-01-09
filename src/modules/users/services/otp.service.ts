@@ -12,6 +12,7 @@ import { User } from '../entities/user.entity';
 import { from, lastValueFrom } from 'rxjs';
 import { TwilioService } from './twilio.service';
 import { MasterBaseService } from './master-base.service';
+import { ConfigService } from 'modules/admin/config/config.service';
 
 /**
  * Service for managing One-Time Password (OTP) codes.
@@ -24,6 +25,7 @@ export class OtpService {
    * @param {Repository<User>} userRepository - Repository for the User entity.
    * @param {TwilioService} twilioService - Twilio service for sending SMS messages.
    * @param {MasterBaseService} masterBaseService - Service for sending emails via MasterBase.
+   * @param {ConfigService} configService - Service for sending emails via MasterBase.
    */
   constructor(
     @InjectRepository(Otp)
@@ -32,6 +34,7 @@ export class OtpService {
 
     private twilioService: TwilioService,
     private masterBaseService: MasterBaseService,
+    private configService: ConfigService,
   ) {}
 
   /**
@@ -114,7 +117,15 @@ export class OtpService {
    * @returns {Promise<void>} - Promise resolved after sending the OTP code.
    */
   async sendOtp(user, cellPhone, email) {
-    const otp = await this.createOtp(user, 5);
+    const minutexExpirationOtp = await this.configService.finOneByKeyAndModule(
+      'time',
+      'otp',
+    );
+
+    const otp = await this.createOtp(
+      user,
+      minutexExpirationOtp ? parseInt(minutexExpirationOtp.value) : 5,
+    );
     const messageBody = `Tu código de verificación es: ${otp.otp}. No compartas este código con nadie.`;
     this.twilioService.sendSMS(cellPhone, messageBody);
     this.masterBaseService.sendOtp(email, 'OTP', messageBody);
