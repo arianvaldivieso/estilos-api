@@ -1,13 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class LoginDto {
-  @ApiProperty({ type: String })
+export class ValidateDocumentDto {
   @IsNotEmpty()
   @IsString()
   documentNumber: string;
 
   @IsNotEmpty()
   @IsString()
-  password: string;
+  documentType: string;
 }
