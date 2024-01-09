@@ -67,14 +67,6 @@ export class ApiStylesService {
           'ConsultaObtenerSaldoResult'
         ][0]['a:ECupoES'][0];
 
-      if (
-        !data['s:Envelope']['s:Body'][0]['ConsultaObtenerSaldoResponse'] ||
-        !data['s:Envelope']['s:Body'][0]['ConsultaObtenerSaldoResponse'][0][
-          'ConsultaObtenerSaldoResult']
-      ) {
-        throw new BadRequestException('Error al intentar realizar la solicitud');
-      }
-
       return {
         cuenta: json['a:Cuenta'][0],
         disponible: json['a:Disponible'][0],
@@ -119,14 +111,7 @@ export class ApiStylesService {
 
     if (result) {
       const data: any = await this._xmlsService.parseXMLtoJSON(result);
-
-      if (
-        !data['s:Envelope']['s:Body'][0]['ObtenerObtenerDatosTarjetaResponse'] ||
-        !data['s:Envelope']['s:Body'][0]['ObtenerObtenerDatosTarjetaResponse'][0][
-          'ObtenerObtenerDatosTarjetaResult']
-      ) {
-        throw new BadRequestException('Error al intentar realizar la solicitud');
-      }
+      console.log('🚀 ~ ApiStylesService ~ data:', data);
 
       const json =
         data['soap:Envelope']['soap:Body'][0][
@@ -158,7 +143,7 @@ export class ApiStylesService {
    * @param {string} number_account
    * @returns {Promise<any>} - Promise resolved.
    */
-  async ConsultaLetrasPendientes(number_account: string) {
+  async ConsultaLetrasPendientes(number_account: string): Promise<any> {
     const soapData =
       await this._xmlsService.getCheckOutstandingLetters(number_account);
 
@@ -179,14 +164,6 @@ export class ApiStylesService {
 
     if (result) {
       const data: any = await this._xmlsService.parseXMLtoJSON(result);
-
-      if (
-        !data['s:Envelope']['s:Body'][0]['ConsultaLetrasPendientesResponse'] ||
-        !data['s:Envelope']['s:Body'][0]['ConsultaLetrasPendientesResponse'][0][
-          'ConsultaLetrasPendientesResult']
-      ) {
-        throw new BadRequestException('Error al intentar realizar la solicitud');
-      }
 
       const json =
         data['s:Envelope']['s:Body'][0]['ConsultaLetrasPendientesResponse'][0][
@@ -339,7 +316,7 @@ export class ApiStylesService {
    * @param {string} dni
    * @returns {Promise<any>} - Promise resolved.
    */
-  async transactionRegistration() {
+  async transactionRegistration(): Promise<any> {
     const soapData = await this._xmlsService.transactionRegistration();
 
     const url =
@@ -359,17 +336,24 @@ export class ApiStylesService {
 
     if (result) {
       const data: any = await this._xmlsService.parseXMLtoJSON(result);
-      console.log(
-        '🚀 ~ file: api-styles.service.ts:137 ~ ApiStylesService ~ ConsultaLetrasPendientes ~ data:',
-        JSON.parse(data['s:Envelope']['s:Body'][0]),
-      );
-      const json = data['s:Envelope']['s:Body'][0];
 
-      const datosLetrasPendientesArray = [];
+      const json =
+        data['s:Envelope']['s:Body'][0]['TransactionRegistrationResponse'][0][
+          'TransactionRegistrationResult'
+        ][0];
 
       return {
-        datosLetrasPendientes: datosLetrasPendientesArray,
-        correcto: json['a:Correcto'][0] === 'true' ? true : false,
+        Message: json['a:Message'][0],
+        Success: json['a:Success'][0],
+        CardBrand: json['a:CardBrand'][0],
+        CardExpiration: json['a:CardExpiration'][0],
+        CardHolder: json['a:CardHolder'][0],
+        CardNumber: json['a:CardNumber'][0],
+        CardUserID: json['a:CardUserID'][0],
+        CardUserName: json['a:CardUserName'][0],
+        TransactionAmount: json['a:TransactionAmount'][0],
+        TransactionCoupons: json['a:TransactionCoupons'][0],
+        TransactionId: json['a:TransactionId'][0],
       };
     }
 
@@ -401,10 +385,7 @@ export class ApiStylesService {
 
     if (result) {
       const data: any = await this._xmlsService.parseXMLtoJSON(result);
-      console.log(
-        '🚀 ~ file: api-styles.service.ts:137 ~ ApiStylesService ~ ConsultaLetrasPendientes ~ data:',
-        JSON.parse(data),
-      );
+
       const json = data['s:Envelope']['s:Body'][0];
 
       return {
@@ -449,14 +430,6 @@ export class ApiStylesService {
 
     if (result) {
       const data: any = await this._xmlsService.parseXMLtoJSON(result);
-
-      if (
-        !data['s:Envelope']['s:Body'][0]['mxConsultaListadoMovimientosResponse'] ||
-        !data['s:Envelope']['s:Body'][0]['mxConsultaListadoMovimientosResponse'][0][
-          'mxConsultaListadoMovimientosResult']
-      ) {
-        throw new BadRequestException('Error al intentar realizar la solicitud');
-      }
 
       const arrayObject =
         data['s:Envelope']['s:Body'][0][

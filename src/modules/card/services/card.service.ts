@@ -116,14 +116,12 @@ export class CardService {
 
         //delete data
         delete cardData.user;
-  
-        throw new BadRequestException(
-          'Aun no se encuentra activado el servicio para tarjetas distintas a tarjetas estilos',
-        );
+        return cardData;
       }
 
-      return 
-
+      throw new BadRequestException(
+        'Aun no se encuentra activado el servicio para tarjetas distintas a tarjetas estilos',
+      );
     } catch (error) {
       throw new NotImplementedException(error);
     }
@@ -304,6 +302,7 @@ export class CardService {
         const result = await this._apiStylesService.consultaObtenerSaldo(
           validateCard.tarjetaCuenta,
         );
+        console.log("🚀 ~ CardService ~ recharge ~ result:", result)
 
         if (result.disponible < rechargeCardDto.amount) {
           throw new BadRequestException(
@@ -311,13 +310,28 @@ export class CardService {
           );
         }
 
-        const xml = await this._xmlsService.transactionRegistration();
+        const amountLast = result.disponible;
 
         const transactionRegistration =
           await this._apiStylesService.transactionRegistration();
+
+        //check balance card style
+        const resultNew = await this._apiStylesService.consultaObtenerSaldo(
+          validateCard.tarjetaCuenta,
+        );
+        console.log("🚀 ~ CardService ~ recharge ~ resultNew:", resultNew)
+
+        if (amountLast === resultNew.disponible) {
+          throw new BadRequestException('Transaccion fallida');
+        }
+
+        return transactionRegistration;
       }
 
-      return {};
+      throw new BadRequestException(
+        'Actualmente solo prestamos servicios a tarjetas estilos',
+      );
+
     } catch (error) {
       throw new NotImplementedException(error);
     }
@@ -382,14 +396,17 @@ export class CardService {
       receiver.documentNumber,
     );
 
-    const compareDate = this._apiStylesService.validarFechaFinal(new Date(listMovementCardDto.startDate), new Date(listMovementCardDto.endDate));
+    const compareDate = this._apiStylesService.validarFechaFinal(
+      new Date(listMovementCardDto.startDate),
+      new Date(listMovementCardDto.endDate),
+    );
 
     if (!compareDate) {
       throw new BadRequestException(
         'La fecha final no puede ser menor a la fecha inicial',
       );
     }
-    
+
     const result = await this._apiStylesService.mxConsultaListadoMovimientos(
       cardData.tarjetaCuenta,
       listMovementCardDto.startDate,

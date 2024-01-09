@@ -99,102 +99,55 @@ export class XmlsService {
    */
   async transactionRegistration(): Promise<string> {
     const data = `
-      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">                  
-        <soapenv:Header/>                  
-          <soapenv:Body>                  
-            <tem:TransactionRegistration>                  
-            <!--Optional:-->                  
-            <tem:BillType>NC</tem:BillType>  <!-- --NC (Por defecto) -->  
-            <!--Optional:-->                  
-            <tem:EstilosUserName>EstilosOnLine</tem:EstilosUserName> <!-- --EstilosOnLine (Por defecto) -->             
-            <!--Optional:-->                  
-            <tem:EstilosStoreId>35</tem:EstilosStoreId> <!-- --35 (Por defecto)  35 = Tienda Virtual  (Validar si será misma tienda o se creará otra) -->              
-            <!--Optional:-->                  
-            <tem:EstilosCashierId>10</tem:EstilosCashierId>  --10 (Por defecto)   Caja Credicash (Validar si se usará esta misma caja para billetera u otra) -->                  
-            <!--Optional:-->                  
-            <tem:EstilosCardUsed>1</tem:EstilosCardUsed> <!-- --1 (Por defecto) -Si se usará tarjeta estilos para pago -->                     
-            <!--Optional:-->                  
-            <tem:XML>
-              <![CDATA[<POS>
-                <Detalle NLinea="1" <!-- --Correlativo de línea -->
-                Vendedor="15927" <!-- -Por defecto 15927 -->
-                CodigoProducto="001671600" <!-- -Código del producto (Cada monto credicash tiene un código de producto) -->
-                Descripcion="DISPOSICIÓN EFECTIVO S/.3 . ." <!-- -Descripción del producto -->
-                Cantidad="1" <!-- --Cantidad -->
-                PorcentajeDescuento="0" <!-- -Por defecto CERO -->
-                ValorUnitario="3" <!-- -Valor del credicash -->
-                SubTotal1="3" <!-- -Valor del credicash -->
-                ValorDescuento="0" <!-- -Por defecto CERO -->
-                SubTotal2="3"  <!-- —Valor del credicash -->
-                GravaImpuesto="0" <!-- -Por defecto CERO -->
-                ValorImpuesto="0" <!-- -Por defecto CERO -->
-                DescuentoGeneral="0" <!-- -Por defecto CERO -->
-                Beneficio="" <!-- -Por defecto vacío -->
-                MetodoCupon="" <!-- -Por defecto vacío -->
-                CuponesAplicados=""/> <!-- -Por defecto vacío -->
-
-                <Pagos NPago="1" 
-                FormaPago="31"  <!-- -Por defecto 31 -->
-                Cuotas="6"  <!-- -Número de cuotas -->
-                CodigoDocumento="16"  <!-- Por defecto 16 -->
-                NumeroDocumento="6010100103000009" <!-- Numero de tarjeta estilos -->
-                Valor="300.000000"  <!-- -Monto Credicash -->
-                TitularTarjeta="DEMO DEMO"  <!-- Titular de la tarjeta -->
-                AutorizadorTarjeta="12345"  <!-- Por defecto 12345 -->
-                Lote="12345"  <!-- Por defecto 12345 -->
-                SubTotal1="3.000000"  <!-- Monto credicash -->
-                SubTotal2="3.000000"  <!-- Monto credicash -->
-                ValorImpuesto="0"  <!-- Por defecto CERO -->
-                TipoDiferido="2"  <!--  //TipoDiferido (1:sin interes, 2:en cuotas, 3:diferido) -->
-                CodigoOperador="" <!-- Por defecto vacío -->
-                Cuenta="300000" <!-- Número cuenta estilos -->
-                BancoEmite="1" <!-- Por defecto 1 -->
-                Credicash="1" <!-- Por defecto 1 -->
-                Comision="0.300000000"/> <!-- Valor de comisión credicash (Actualmente es el 1% del total)-->
-
-                <Cliente IdCliente="99999999" <!-- Documento de identidad del cliente-->
-                TipoId="1" <!-- --Tipo de documento identidad (1: DNI, 4: RUC, 3: Carnet Extranjeria)-->
-                Nombre1="DEMO DEMO" <!-- Nombre del cliente-->
-                DireccionDomicilio="Calle Canoas" <!-- Dirección del cliente-->
-                TelefonoDomicilio1="999999999" <!-- Teléfono del cliente-->
-                CorreoElectronico="demo@hotmail.com" <!-- Correo del cliente-->
-                FechaNacimiento="1982-10-30" <!-- Año nacimieno del cliente-->
-                Observaciones="Nro Operacion: 2818" /> <!-- Codigo operación (En este caso de la transferencia bancaria)-->
-             </POS>]]>
-            </tem:XML>                  
-            <!--Optional:-->                  
-            <tem:CardAccount>300000</tem:CardAccount> <!--  -- Número Cuenta Estilos     -->                 
-            <!--Optional:-->                  
-            <tem:CardNumber>6010100103000009</tem:CardNumber> <!--  -- Número Tarjeta EStilos     -->                 
-            <!--Optional:-->                  
-            <tem:CardPassword>12345</tem:CardPassword> <!--  --12345 (Por defecto)      -->                 
-            <!--Optional:-->                  
-            <tem:BillAmount>3.000000</tem:BillAmount>  <!-- --Total de compra    -->                  
-            <!--Optional:-->                  
-            <tem:BillDate>2024-2-19 00:00:00</tem:BillDate> <!--   --Fecha Transacción      -->               
-            <!--Optional:-->                  
-            <tem:PaymentMode>2</tem:PaymentMode> <!--  //PaymentMode (1:sin interes, 2:en cuotas, 3:diferido) -->
-            <!--Optional:-->                  
-            <tem:PaymentLength>6</tem:PaymentLength>    <!--  --Número de cuotas      -->                           
-            <!--Optional:-->                  
-            <tem:EstilosBussinessId>1</tem:EstilosBussinessId>  <!--  --Por defecto va 1   -->                                
-            <!--Optional:-->                  
-            <tem:EstilosTerminalName>PCPRUEBA</tem:EstilosTerminalName> <!--  --Por defecto va PCPRUEBA   -->                                 
-            <!--Optional:-->                  
-            <tem:EstilosPrinterName>S/N</tem:EstilosPrinterName> <!--  --Por defecto va S/N -->                                    
-            <!--Optional:-->                  
-            <tem:SunatSerie>001</tem:SunatSerie> <!--  --Colocar el secuencial de sunat de la tienda-->
-            <!--Optional:-->                  
-            <tem:SunatSequential>33511</tem:SunatSequential> <!-- --Por defecto va 33511   -->                                                   
-            <!--Optional:-->                  
-            <tem:modoCaptura>CASHWEB</tem:modoCaptura> <!-- --Por defecto va CASHWEB  -->                                                   
-            <!--Optional:-->                  
-            <tem:TipoIdentificacion>1</tem:TipoIdentificacion> <!-- --Tipo de documento identidad (1: DNI, 4: RUC, 3: Carnet Extranjeria) -->
-            <!--Optional:-->                  
-            <tem:IdDocumentoCliente>99999999</tem:IdDocumentoCliente> <!--  --Número Documento de identidad -->                                                    
-            </tem:TransactionRegistration>                  
-          </soapenv:Body>               
-        </soapenv:Envelope>
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+      <soapenv:Header/>
+      <soapenv:Body>
+        <tem:TransactionRegistration>                  
+      <!--Optional:-->                  
+      <tem:BillType>NC</tem:BillType>                  
+      <!--Optional:-->                  
+      <tem:EstilosUserName>EstilosOnLine</tem:EstilosUserName>                  
+      <!--Optional:-->                  
+      <tem:EstilosStoreId>17</tem:EstilosStoreId>                  
+      <!--Optional:-->                  
+      <tem:EstilosCashierId>5</tem:EstilosCashierId>                  
+      <!--Optional:-->                  
+      <tem:EstilosCardUsed>1</tem:EstilosCardUsed>                  
+      <!--Optional:-->                  
+      <tem:XML><![CDATA[<POS><Detalle NLinea="1" Vendedor="15927" CodigoProducto="001671600" Descripcion="DISPOSICIÓN EFECTIVO S/.30 . ." Cantidad="1" PorcentajeDescuento="0" ValorUnitario="30" SubTotal1="30" ValorDescuento="0" SubTotal2="30" GravaImpuesto="0" ValorImpuesto="0" DescuentoGeneral="0" Beneficio="" MetodoCupon="" CuponesAplicados=""/><Pagos NPago="1" FormaPago="31" Cuotas="6" CodigoDocumento="16" NumeroDocumento="6010100103000009" Valor="30.000000" TitularTarjeta="DEMO DEMO" AutorizadorTarjeta="12345" Lote="12345" SubTotal1="30.000000" SubTotal2="30.000000" ValorImpuesto="0" TipoDiferido="2" CodigoOperador="" Cuenta="300000" BancoEmite="1" Credicash="1" Comision="3.00000000"/><Cliente IdCliente="99999999" TipoId="1" Nombre1="DEMO DEMO" DireccionDomicilio="Calle Canoas" TelefonoDomicilio1="999999999" CorreoElectronico="demo@hotmail.com" FechaNacimiento="1982-10-30" Observaciones="Nro Operacion: 2818" /></POS>]]></tem:XML>                  
+      <!--Optional:-->                  
+      <tem:CardAccount>300000</tem:CardAccount>                  
+      <!--Optional:-->                  
+      <tem:CardNumber>6010100103000009</tem:CardNumber>                  
+      <!--Optional:-->                  
+      <tem:CardPassword>12345</tem:CardPassword>                  
+      <!--Optional:-->                  
+      <tem:BillAmount>30.000000</tem:BillAmount>                  
+      <!--Optional:-->                  
+      <tem:BillDate>2023-12-19 00:00:00</tem:BillDate>                  
+      <!--Optional:-->                  
+      <tem:PaymentMode>2</tem:PaymentMode>                  
+      <!--Optional:-->                  
+      <tem:PaymentLength>6</tem:PaymentLength>                 
+      <!--Optional:-->                  
+      <tem:EstilosBussinessId>1</tem:EstilosBussinessId>                 
+      <!--Optional:-->                  
+      <tem:EstilosTerminalName>PCPRUEBA</tem:EstilosTerminalName>                 
+      <!--Optional:-->                  
+      <tem:EstilosPrinterName>S/N</tem:EstilosPrinterName>                  
+      <!--Optional:-->                  
+      <tem:SunatSerie>001</tem:SunatSerie>                  
+      <!--Optional:-->                  
+      <tem:SunatSequential>33511</tem:SunatSequential>                  
+      <!--Optional:-->                  
+      <tem:modoCaptura>CASHWEB</tem:modoCaptura>                 
+      <!--Optional:-->                  
+      <tem:TipoIdentificacion>1</tem:TipoIdentificacion>                  
+      <!--Optional:-->                  
+      <tem:IdDocumentoCliente>99999999</tem:IdDocumentoCliente>                  
+      </tem:TransactionRegistration>                  
+    </soapenv:Body>
+  </soapenv:Envelope>
          `;
 
     return data;
