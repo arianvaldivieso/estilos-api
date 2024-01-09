@@ -10,6 +10,7 @@ import { StandardResponseInterceptor } from 'core/responses/standard-response.in
 import { AuthGuard } from 'modules/auth/auth.guard';
 import { UsersService } from '../services/users.service';
 import { User } from '../entities/user.entity';
+import { UserDecorator } from 'core/auth/user.decorator';
 
 /**
  * Controller for managing user-related operations.
@@ -30,16 +31,16 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @UseInterceptors(StandardResponseInterceptor)
   @Get('profile')
-  async getProfile(@Request() req) {
+  async getProfile(@UserDecorator() user) {
     // Fetch user details along with related roles
-    let user: User = await this._usersService.findOneById(req.id, true, [
-      'rol',
-    ]);
+    user = await this._usersService.findOneById(user.id, true, ['rol']);
 
     const simplifiedUserObject = {
       ...user,
       role: user.rol.name,
     };
+
+    delete simplifiedUserObject.rol;
 
     return simplifiedUserObject;
   }
