@@ -19,5 +19,9 @@ export class RechargeCardDto {
 
   @IsString()
   @IsNotEmpty()
+  type: string;
+
+  @IsString()
+  @IsNotEmpty()
   password: string;
 }

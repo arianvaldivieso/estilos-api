@@ -6,6 +6,7 @@ import { UsersModule } from 'modules/users/users.module';
 import { Card } from './entities/card.entity';
 import { XmlsService } from './services/xmls.service';
 import { TransactionService } from 'modules/transaction/transaction.service';
+import { ApiStylesService } from './services/api-styles.service';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { TransactionService } from 'modules/transaction/transaction.service';
     UsersModule,
   ],
   controllers: [CardController],
-  providers: [CardService, XmlsService],
+  providers: [CardService, XmlsService, ApiStylesService],
 })
 export class CardModule {}

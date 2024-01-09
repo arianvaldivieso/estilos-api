@@ -1,7 +1,7 @@
 import { CardType } from "core/enums/card-type.enum";
 import { IsNumber, IsNotEmpty, IsString, IsEnum, IsOptional } from "class-validator";
 
-export class AssociateCardDto {
+export class CardDto {
   @IsNumber()
   @IsNotEmpty()
   receiverId: number;
