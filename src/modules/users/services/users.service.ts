@@ -109,11 +109,12 @@ export class UsersService {
   public async findOneById(
     id: number,
     includeRelations: boolean = false,
+    relations: string[] = ['sentTransactions', 'receivedTransactions'],
   ): Promise<User> {
     const options: FindOneOptions<User> = { where: { id: id } };
 
     if (includeRelations) {
-      options.relations = ['sentTransactions', 'receivedTransactions'];
+      options.relations = relations;
     }
 
     return await lastValueFrom(from(this.usersRepository.findOne(options)));
