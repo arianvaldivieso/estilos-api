@@ -20,6 +20,7 @@ import RolesSeeder from 'core/seeders/roles.seeder';
 import PageSeeder from 'core/seeders/page-seeder';
 import DepartamentSeeder from 'core/seeders/departament.seeder';
 import UserSeeder from 'core/seeders/user.seeder';
+import ConfigSeeder from 'core/seeders/config.seeder';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import UserSeeder from 'core/seeders/user.seeder';
     PageSeeder,
     DepartamentSeeder,
     UserSeeder,
+    ConfigSeeder
   ],
 })
 export class AppModule implements OnApplicationBootstrap {

@@ -1,9 +1,9 @@
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
-import { Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { globalConfig } from './seeders-data/config.data';
 import { GlobalConfig } from 'modules/admin/entities/global-config.entity';
-
+@Injectable()
 export default class ConfigSeeder implements Seeder {
   constructor(private dataSource: DataSource) { }
 
