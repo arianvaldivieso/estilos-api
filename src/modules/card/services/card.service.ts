@@ -222,12 +222,12 @@ export class CardService {
   /**
    * list Movements.
    * @param {User} user - User initiating the transaction.
-   * @param {CardDto} listMovementCardDto - type for whom the card is fetched.
+   * @param {CardDto} pendingPaymentsCardDto - type for whom the card is fetched.
    * @returns {Promise<any>} - Promise resolved with the found transaction.
    */
-  async listMovements(listMovementCardDto: CardDto, user: User): Promise<any> {
+  async pendingPayments(pendingPaymentsCardDto: CardDto, user: User): Promise<any> {
     try {
-      const receiverId = listMovementCardDto.receiverId;
+      const receiverId = pendingPaymentsCardDto.receiverId;
       const receiver = await this._usersService.findOneById(receiverId);
 
       //validation of existence of the id within the database
@@ -237,13 +237,13 @@ export class CardService {
 
       //validate if the card exists
       const hasExisteCard = this.validateCard(
-        listMovementCardDto.number_account,
+        pendingPaymentsCardDto.number_account,
         true,
       );
 
       const cardData = await this._apiStylesService.ObtenerObtenerDatosTarjeta(
-        this._apiStylesService.md5(listMovementCardDto.password),
-        listMovementCardDto.card_number,
+        this._apiStylesService.md5(pendingPaymentsCardDto.password),
+        pendingPaymentsCardDto.card_number,
         receiver.documentNumber,
       );
 

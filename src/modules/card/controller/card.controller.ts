@@ -35,9 +35,9 @@ export class CardController {
     return await this._cardService.getCardByCardNumber(cardNumber);
   }
 
-  @Post('list-movement')
-  async listMovements(@Body() listMovementCardDto: CardDto, @User() user) {
-    return await this._cardService.listMovements(listMovementCardDto, user);
+  @Post('pending-payments')
+  async pendingPayments(@Body() pendingPaymentsCardDto: CardDto, @User() user) {
+    return await this._cardService.pendingPayments(pendingPaymentsCardDto, user);
   }
 
   @Post('recharge')
