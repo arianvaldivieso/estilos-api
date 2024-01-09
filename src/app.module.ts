@@ -11,6 +11,8 @@ import { DistrictModule } from './modules/district/district.module';
 import { AuthModule } from 'modules/auth/auth.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { FaqModule } from './modules/faq/faq.module';
+import { ContactModule } from './modules/contact/contact.module';
 import { CardModule } from './modules/card/card.module';
 import { OnApplicationBootstrap } from '@nestjs/common';
 import { SeedingService } from 'core/seeders/services/seedingService';
@@ -33,6 +35,8 @@ import UserSeeder from 'core/seeders/user.seeder';
     AuthModule,
     TransactionModule,
     AdminModule,
+    FaqModule,
+    ContactModule,
     CardModule,
   ],
   controllers: [AppController],

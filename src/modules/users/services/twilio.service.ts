@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as twilio from 'twilio';
 
 /**
@@ -44,7 +44,7 @@ export class TwilioService {
         from: process.env.TWILIO_PHONE_NUMBER,
       });
     } catch (error) {
-      throw new Error(`Error sending SMS: ${error}`);
+      Logger.log(`Error sending SMS: ${error}`);
     }
   }
 }

@@ -7,8 +7,6 @@ import { from, lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class RolesService {
-  private readonly logger: Logger = new Logger(RolesService.name);
-
   constructor(
     @InjectRepository(Role)
     private _rolesRepository: Repository<Role>,

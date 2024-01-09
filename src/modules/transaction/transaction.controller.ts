@@ -14,7 +14,7 @@ import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { AuthGuard } from 'modules/auth/auth.guard';
 import { StandardResponseInterceptor } from 'core/responses/standard-response.interceptor';
-import { User } from 'core/auth/user.decorator';
+import { UserDecorator } from 'core/auth/user.decorator';
 
 @Controller('transaction')
 @UseGuards(AuthGuard)
@@ -23,21 +23,24 @@ export class TransactionController {
   constructor(private readonly _transactionService: TransactionService) {}
 
   @Post()
-  create(@Body() createTransactionDto: CreateTransactionDto, @User() user) {
+  create(
+    @Body() createTransactionDto: CreateTransactionDto,
+    @UserDecorator() user,
+  ) {
     return this._transactionService.create(createTransactionDto, user);
   }
 
   @Get()
-  findAll(@User() user: any) {
+  findAll(@UserDecorator() user: any) {
     return this._transactionService.findAll(user);
   }
 
   @Get('balance')
-  getBalance(@User() user) {
+  getBalance(@UserDecorator() user) {
     return this._transactionService.calculateBalance(user.id);
   }
   @Get(':id')
-  findOne(@Param('id') id: string, @User() user) {
+  findOne(@Param('id') id: string, @UserDecorator() user) {
     return this._transactionService.findOne(+id, user);
   }
 }
