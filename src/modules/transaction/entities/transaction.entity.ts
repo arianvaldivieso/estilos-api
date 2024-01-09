@@ -30,10 +30,14 @@ export class Transaction {
   @JoinColumn({ name: 'receiverId' })
   receiver: User;
 
-  @Column()
+  @Column({ nullable: true })
   amount: number;
 
+  @Column({ nullable: true })
+  comision: number;
+
   type: string;
+  comisionData;
 
   setTransactionType(userId: number): void {
     if (this.senderId == userId) {
@@ -43,6 +47,16 @@ export class Transaction {
     } else {
       this.type = 'unknown';
     }
+  }
+
+  calculateComision() {
+    const calculate = this.amount * (this.comision / 100);
+    const comisionTotal = this.amount * calculate;
+    this.comisionData = {
+      comision: this.comision,
+      calculate: calculate,
+      comisionTotal: comisionTotal,
+    };
   }
 
   @Column({ default: 'pending' })

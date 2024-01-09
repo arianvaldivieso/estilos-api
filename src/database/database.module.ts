@@ -6,6 +6,7 @@ import { Module } from '@nestjs/common/decorators/modules';
 import RolesSeeder from 'core/seeders/roles.seeder';
 import DepartamentSeeder from 'core/seeders/departament.seeder';
 import PageSeeder from 'core/seeders/page-seeder';
+import ConfigSeeder from 'core/seeders/config.seeder';
 
 @Module({
   imports: [
@@ -30,13 +31,13 @@ import PageSeeder from 'core/seeders/page-seeder';
             options,
           ).initialize();
           await runSeeders(dataSource, {
-            seeds: [RolesSeeder, DepartamentSeeder, PageSeeder],
+            seeds: [RolesSeeder, DepartamentSeeder, PageSeeder, ConfigSeeder],
             factories: [],
           });
           return dataSource;
         } catch (error) {
           console.error('Error during seeding:', error);
-          throw error; // Rethrow the error to prevent the application from starting with a potentially incomplete database state.
+          throw error;
         }
       },
       inject: [ConfigService],
