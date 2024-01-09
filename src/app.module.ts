@@ -18,8 +18,6 @@ import RolesSeeder from 'core/seeders/roles.seeder';
 import PageSeeder from 'core/seeders/page-seeder';
 import DepartamentSeeder from 'core/seeders/departament.seeder';
 import UserSeeder from 'core/seeders/user.seeder';
-import AxiosModule from 'axios';
-import { SoapModule } from 'nestjs-soap';
 
 @Module({
   imports: [

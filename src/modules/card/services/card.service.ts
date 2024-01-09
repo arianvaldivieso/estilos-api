@@ -34,7 +34,7 @@ export class CardService {
   ];
 
   private readonly logger: Logger = new Logger(CardService.name);
-  
+
   constructor(
     @InjectRepository(Card)
     private _cardRepository: Repository<Card>,
@@ -506,19 +506,44 @@ export class CardService {
     const data = await this._xmlsService.checkGetBalance();
     this.logger.debug(`BUILD_RESPONSE::INIT data ${data}`);
 
+    const url =
+      'https://wap.nuestrafamilia.com.pe/Estilos.AppPagos/EstilosTiendaVirtual.svc';
+
+    // Datos SOAP proporcionados
+    const soapData = `
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+       <soapenv:Header/>
+       <soapenv:Body>
+          <tem:ConsultaObtenerSaldo>
+             <!--Optional:-->
+             <tem:tcTarjeta>?</tem:tcTarjeta>
+             <!--Optional:-->
+             <tem:tcCuenta>300000</tem:tcCuenta>
+          </tem:ConsultaObtenerSaldo>
+       </soapenv:Body>
+    </soapenv:Envelope>
+`;
+
+    // Configuración de la solicitud Axios
     const config = {
-      method: 'post',
-      url: 'https://app.estilos.com.pe/Estilos.ServiceAppPagos/EstilosTiendaVirtual.svc',
       headers: {
-        'Content-Type': 'text/xml; charset=utf-8',
+        'Content-Type': 'text/xml;charset=UTF-8',
+        SOAPAction:
+          'http://tempuri.org/IEstilosTiendaVirtual/ConsultaObtenerSaldo', // Reemplaza con la acción SOAP real
       },
-      data: data,
     };
 
-    const response = await axios.request(config);
-    this.logger.debug(`BUILD_RESPONSE::INIT response ${response}`);
-
-    this.logger.debug('BUILD_RESPONSE::INIT');
+    // Realizar la solicitud SOAP con Axios
+    axios
+      .post(url, soapData, config)
+      .then((response) => {
+        // Procesar la respuesta SOAP
+        console.log(response.data);
+      })
+      .catch((error) => {
+        // Manejar errores
+        console.error(error);
+      });
 
     return true;
   }
