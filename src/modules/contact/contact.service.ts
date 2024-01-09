@@ -1,12 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { Contact } from './entities/contact.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial } from 'typeorm';
 import { User } from 'modules/users/entities/user.entity';
-import { from, lastValueFrom } from 'rxjs';
+import { concat, from, lastValueFrom } from 'rxjs';
 import { UsersService } from 'modules/users/services/users.service';
 import { CustomContact } from './interface/contact.interface';
+import { ContactRepository } from './repositories/contact.repository';
+import { RemoveContactDto } from './dto/remove-contact.dto';
 
 /**
  * Service for managing operations related to contacts.
@@ -19,8 +20,7 @@ export class ContactService {
    * @param {UsersService} userService - Service for managing users.
    */
   constructor(
-    @InjectRepository(Contact)
-    private contactRepository: Repository<Contact>,
+    private contactRepository: ContactRepository,
     private readonly userService: UsersService,
   ) {}
 
@@ -108,6 +108,36 @@ export class ContactService {
       // Handle any potential errors during the process
       console.error('Error while fetching contacts:', error);
       throw new Error('Failed to fetch contacts.');
+    }
+  }
+
+  async remove(
+    removeContactDto: RemoveContactDto,
+    user: User,
+  ): Promise<string> {
+    try {
+      let existContact = await this.userService.findOneByPhone(
+        removeContactDto.cellPhone,
+      );
+
+      // Find the contact based on the provided contactId
+      const contact = await this.contactRepository.findOne({
+        where: {
+          owner: { id: user.id },
+          contact: { id: existContact.id },
+        },
+      });
+
+      // Check if the contact exists
+      if (!contact) {
+        throw new BadRequestException('Contact Not Found');
+      }
+
+      // Remove the contact
+      await this.contactRepository.remove(contact);
+      return 'ok';
+    } catch (error) {
+      throw new BadRequestException('Contact removal failed: ' + error);
     }
   }
 }
