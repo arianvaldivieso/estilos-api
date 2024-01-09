@@ -13,6 +13,7 @@ import { User } from 'modules/users/entities/user.entity';
 import { UserDecorator } from 'core/auth/user.decorator';
 import { ContactService } from './contact.service';
 import { Contact } from './entities/contact.entity';
+import { CustomContact } from './interface/contact.interface';
 
 /**
  * Controller for managing contact-related operations.
@@ -33,7 +34,7 @@ export class ContactController {
    * @returns {Promise<Contact[]>} - Promise resolved with an array of contacts.
    */
   @Get()
-  findAll(@UserDecorator() user: User): Promise<Contact[]> {
+  findAll(@UserDecorator() user: User): Promise<CustomContact[]> {
     return this.contactService.findAll(user.id);
   }
 
