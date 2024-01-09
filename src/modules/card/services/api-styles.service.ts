@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { XmlsService } from './xmls.service';
 import { createHash } from 'node:crypto';
@@ -67,6 +67,14 @@ export class ApiStylesService {
           'ConsultaObtenerSaldoResult'
         ][0]['a:ECupoES'][0];
 
+      if (
+        !data['s:Envelope']['s:Body'][0]['ConsultaObtenerSaldoResponse'] ||
+        !data['s:Envelope']['s:Body'][0]['ConsultaObtenerSaldoResponse'][0][
+          'ConsultaObtenerSaldoResult']
+      ) {
+        throw new BadRequestException('Error al intentar realizar la solicitud');
+      }
+
       return {
         cuenta: json['a:Cuenta'][0],
         disponible: json['a:Disponible'][0],
@@ -111,6 +119,14 @@ export class ApiStylesService {
 
     if (result) {
       const data: any = await this._xmlsService.parseXMLtoJSON(result);
+
+      if (
+        !data['s:Envelope']['s:Body'][0]['ObtenerObtenerDatosTarjetaResponse'] ||
+        !data['s:Envelope']['s:Body'][0]['ObtenerObtenerDatosTarjetaResponse'][0][
+          'ObtenerObtenerDatosTarjetaResult']
+      ) {
+        throw new BadRequestException('Error al intentar realizar la solicitud');
+      }
 
       const json =
         data['soap:Envelope']['soap:Body'][0][
@@ -163,12 +179,15 @@ export class ApiStylesService {
 
     if (result) {
       const data: any = await this._xmlsService.parseXMLtoJSON(result);
-      console.log(
-        '🚀 ~ file: api-styles.service.ts:137 ~ ApiStylesService ~ ConsultaLetrasPendientes ~ data:',
-        data['s:Envelope']['s:Body'][0]['ConsultaLetrasPendientesResponse'][0][
-          'ConsultaLetrasPendientesResult'
-        ][0],
-      );
+
+      if (
+        !data['s:Envelope']['s:Body'][0]['ConsultaLetrasPendientesResponse'] ||
+        !data['s:Envelope']['s:Body'][0]['ConsultaLetrasPendientesResponse'][0][
+          'ConsultaLetrasPendientesResult']
+      ) {
+        throw new BadRequestException('Error al intentar realizar la solicitud');
+      }
+
       const json =
         data['s:Envelope']['s:Body'][0]['ConsultaLetrasPendientesResponse'][0][
           'ConsultaLetrasPendientesResult'
@@ -431,14 +450,22 @@ export class ApiStylesService {
     if (result) {
       const data: any = await this._xmlsService.parseXMLtoJSON(result);
 
+      if (
+        !data['s:Envelope']['s:Body'][0]['mxConsultaListadoMovimientosResponse'] ||
+        !data['s:Envelope']['s:Body'][0]['mxConsultaListadoMovimientosResponse'][0][
+          'mxConsultaListadoMovimientosResult']
+      ) {
+        throw new BadRequestException('Error al intentar realizar la solicitud');
+      }
+
       const arrayObject =
-      data['s:Envelope']['s:Body'][0][
-        'mxConsultaListadoMovimientosResponse'
-      ][0]['mxConsultaListadoMovimientosResult'][0]['a:EListadoMovimientoES'];
-      
+        data['s:Envelope']['s:Body'][0][
+          'mxConsultaListadoMovimientosResponse'
+        ][0]['mxConsultaListadoMovimientosResult'][0]['a:EListadoMovimientoES'];
+
       let dataArray = [];
 
-      console.log("🚀 ~ ApiStylesService ~ arrayObject:", arrayObject)
+      console.log('🚀 ~ ApiStylesService ~ arrayObject:', arrayObject);
       for (let ind = 0; ind < arrayObject.length; ind++) {
         const object = {
           cancelado: arrayObject[ind]['a:Cancelado'][0],
@@ -511,7 +538,7 @@ export class ApiStylesService {
     }
   }
 
-    /**
+  /**
    * @returns {boolean}.
    */
   validarFechaFinal(fechaInicial: Date, fechaFinal: Date): boolean {

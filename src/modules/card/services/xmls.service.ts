@@ -252,7 +252,7 @@ export class XmlsService {
 
   /**
    * Parse XML string to JSON object.
-   * @param {string} xml - The XML string to be parsed.
+   * @param {string} xmlString - The XML string to be parsed.
    * @param {object} [options={ explicitArray: false }] - Optional parsing options.
    * @returns {Promise<object>} The parsed JSON object.
    */
