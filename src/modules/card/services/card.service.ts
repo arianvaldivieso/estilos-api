@@ -17,6 +17,7 @@ import { CardType } from 'core/enums/card-type.enum';
 import { CardStatus } from 'core/enums/card-status.enum';
 import { RechargeCardDto } from '../dto/recharge.dto';
 import { ApiStylesService } from './api-styles.service';
+import { ListMovementCardDto } from '../dto/list-movement-card.dto';
 
 @Injectable()
 export class CardService {
@@ -118,7 +119,6 @@ export class CardService {
       delete cardData.user;
 
       return cardData;
-
     } catch (error) {
       throw new NotImplementedException(error);
     }
@@ -225,7 +225,10 @@ export class CardService {
    * @param {CardDto} pendingPaymentsCardDto - type for whom the card is fetched.
    * @returns {Promise<any>} - Promise resolved with the found transaction.
    */
-  async pendingPayments(pendingPaymentsCardDto: CardDto, user: User): Promise<any> {
+  async pendingPayments(
+    pendingPaymentsCardDto: CardDto,
+    user: User,
+  ): Promise<any> {
     try {
       const receiverId = pendingPaymentsCardDto.receiverId;
       const receiver = await this._usersService.findOneById(receiverId);
@@ -257,7 +260,13 @@ export class CardService {
     }
   }
 
-  async recharge(rechargeCardDto: RechargeCardDto, user) {
+  /**
+   * recharge.
+   * @param {User} user - User initiating the transaction.
+   * @param {RechargeCardDto} rechargeCardDto - type for whom the card is fetched.
+   * @returns {Promise<any>} - Promise resolved with the found transaction.
+   */
+  async recharge(rechargeCardDto: RechargeCardDto, user: User): Promise<any> {
     try {
       this.currentUser = user;
       const receiverId = rechargeCardDto.receiverId;
@@ -297,10 +306,10 @@ export class CardService {
           );
         }
 
-        const xml =
-          await this._xmlsService.transactionRegistration();
+        const xml = await this._xmlsService.transactionRegistration();
 
-        const transactionRegistration = await this._apiStylesService.transactionRegistration();
+        const transactionRegistration =
+          await this._apiStylesService.transactionRegistration();
       }
 
       return {};
@@ -309,8 +318,18 @@ export class CardService {
     }
   }
 
+  /**
+   * recharge.
+   * @param {boolean} hasExists - boolean type consult.
+   * @param {string} card_number - card_number for whom the card is fetched.
+   * @returns {Promise<boolean>} - Promise resolved with the found.
+   * @throws {BadRequestException} - returning error
+   */
   //validation functions
-  async validateCard(card_number: string, hasExists: boolean) {
+  async validateCard(
+    card_number: string,
+    hasExists: boolean,
+  ): Promise<boolean> {
     const userHasCard = await this.getCardByCardNumber(card_number);
 
     //validation of existence of the card number
@@ -323,5 +342,55 @@ export class CardService {
     }
 
     return true;
+  }
+
+  /**
+   * getMxCheckListMovements.
+   * @param {ListMovementCardDto} listMovementCardDto - DTO containing card.
+   * @param {User} user - User initiating the transaction.
+   * @returns {Promise<any>} - Promise resolved with the found.
+   * @throws {BadRequestException} - returning error
+   */
+  async getMxCheckListMovements(
+    listMovementCardDto: ListMovementCardDto,
+    user: User,
+  ): Promise<any> {
+    const receiverId = listMovementCardDto.receiverId;
+    const receiver = await this._usersService.findOneById(receiverId);
+
+    //validation of existence of the id within the database
+    if (!receiver) {
+      throw new BadRequestException('Usuario no encontrado');
+    }
+
+    const card = await this.findOne(listMovementCardDto.cardId, user);
+
+    if (!card) {
+      throw new BadRequestException(
+        'El id de la tarjeta no pertence a ninguna tarjeta',
+      );
+    }
+
+    const cardData = await this._apiStylesService.ObtenerObtenerDatosTarjeta(
+      this._apiStylesService.md5(listMovementCardDto.password),
+      card.card_number,
+      receiver.documentNumber,
+    );
+
+    const compareDate = this._apiStylesService.validarFechaFinal(new Date(listMovementCardDto.startDate), new Date(listMovementCardDto.endDate));
+
+    if (!compareDate) {
+      throw new BadRequestException(
+        'La fecha final no puede ser menor a la fecha inicial',
+      );
+    }
+    
+    const result = await this._apiStylesService.mxConsultaListadoMovimientos(
+      cardData.tarjetaCuenta,
+      listMovementCardDto.startDate,
+      listMovementCardDto.endDate,
+    );
+
+    return result;
   }
 }

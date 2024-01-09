@@ -359,6 +359,119 @@ export class ApiStylesService {
 
   /**
    *
+   * @param {string} dni
+   * @returns {Promise<any>} - Promise resolved.
+   */
+  async mxConsultaDatosClienteEBI(dni: string): Promise<any> {
+    const soapData = await this._xmlsService.mxConsultaDatosClienteEBI(dni);
+
+    const url =
+      'http://wap.nuestrafamilia.com.pe:8003/Estilos.ServiceTiendaVirtual_dev/EstilosTiendaVirtual.svc';
+
+    // Configuración de la solicitud Axios
+    const config = {
+      headers: {
+        'Content-Type': 'text/xml;charset=UTF-8',
+        SOAPAction:
+          'http://tempuri.org/IEstilosTiendaVirtual/mxConsultaDatosClienteEBI', // Reemplaza con la acción SOAP real
+      },
+    };
+
+    // Realizar la solicitud SOAP con Axios
+    const result = await this.soapApi(url, soapData, config);
+
+    if (result) {
+      const data: any = await this._xmlsService.parseXMLtoJSON(result);
+      console.log(
+        '🚀 ~ file: api-styles.service.ts:137 ~ ApiStylesService ~ ConsultaLetrasPendientes ~ data:',
+        JSON.parse(data),
+      );
+      const json = data['s:Envelope']['s:Body'][0];
+
+      return {
+        data: json,
+        correcto: json['a:Correcto'][0] === 'true' ? true : false,
+      };
+    }
+
+    return null;
+  }
+
+  /**
+   *
+   * @param {string} dni
+   * @returns {Promise<any>} - Promise resolved.
+   */
+  async mxConsultaListadoMovimientos(
+    number_account: string,
+    startDate: string,
+    endDate: string,
+  ): Promise<any> {
+    const soapData = await this._xmlsService.getMxCheckListMovements(
+      number_account,
+      startDate,
+      endDate,
+    );
+
+    const url =
+      'https://app.estilos.com.pe/Estilos.ServiceAppPagos/EstilosTiendaVirtual.svc';
+
+    // Configuración de la solicitud Axios
+    const config = {
+      headers: {
+        'Content-Type': 'text/xml;charset=UTF-8',
+        SOAPAction:
+          'http://tempuri.org/IEstilosTiendaVirtual/mxConsultaListadoMovimientos', // Reemplaza con la acción SOAP real
+      },
+    };
+
+    // Realizar la solicitud SOAP con Axios
+    const result = await this.soapApi(url, soapData, config);
+
+    if (result) {
+      const data: any = await this._xmlsService.parseXMLtoJSON(result);
+
+      const arrayObject =
+      data['s:Envelope']['s:Body'][0][
+        'mxConsultaListadoMovimientosResponse'
+      ][0]['mxConsultaListadoMovimientosResult'][0]['a:EListadoMovimientoES'];
+      
+      let dataArray = [];
+
+      console.log("🚀 ~ ApiStylesService ~ arrayObject:", arrayObject)
+      for (let ind = 0; ind < arrayObject.length; ind++) {
+        const object = {
+          cancelado: arrayObject[ind]['a:Cancelado'][0],
+          cuotas: arrayObject[ind]['a:Cuotas'][0],
+          descripcion: arrayObject[ind]['a:Descripcion'][0],
+          dias: arrayObject[ind]['a:Dias'][0],
+          documento: arrayObject[ind]['a:Documento'][0],
+          documento2: arrayObject[ind]['a:Documento2'][0],
+          emision: arrayObject[ind]['a:Emision'][0],
+          establecimiento: arrayObject[ind]['a:Establecimiento'][0],
+          gasto: arrayObject[ind]['a:Gasto'][0],
+          gastosTotal: arrayObject[ind]['a:GastosTotal'][0],
+          importe: arrayObject[ind]['a:Importe'][0],
+          importeTotal: arrayObject[ind]['a:ImporteTotal'][0],
+          monto: arrayObject[ind]['a:Monto'][0],
+          nAdicionales: arrayObject[ind]['a:NAdicionales'][0],
+          pagosLinea: arrayObject[ind]['a:PagosLinea'][0],
+          tOperacion: arrayObject[ind]['a:TOperacion'][0],
+          vencimiento: arrayObject[ind]['a:Vencimiento'][0],
+        };
+
+        dataArray.push(object);
+      }
+      return {
+        data: dataArray,
+      };
+    }
+
+    return null;
+  }
+
+  /**
+   *
    * @param string content
    * @returns {string} - Promise resolved with an string encryp.
    */
@@ -396,5 +509,12 @@ export class ApiStylesService {
     } catch (error) {
       return null;
     }
+  }
+
+    /**
+   * @returns {boolean}.
+   */
+  validarFechaFinal(fechaInicial: Date, fechaFinal: Date): boolean {
+    return fechaFinal.getTime() >= fechaInicial.getTime();
   }
 }

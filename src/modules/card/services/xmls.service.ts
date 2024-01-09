@@ -230,6 +230,27 @@ export class XmlsService {
   }
 
   /**
+   * Parse string to XML.
+   * @param {string} dni - The dni string to be parsed.
+   * @returns {Promise<string>} The parsed JSON object.
+   */
+  async mxConsultaDatosClienteEBI(dni: string): Promise<any> {
+    const data = `
+    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+      <soapenv:Header/>
+      <soapenv:Body>
+        <tem:mxConsultaDatosClienteEBI>
+            <!--Optional:-->
+            <tem:tcDNI>99999999</tem:tcDNI>
+        </tem:mxConsultaDatosClienteEBI>
+      </soapenv:Body>
+    </soapenv:Envelope>
+       `;
+
+    return data;
+  }
+
+  /**
    * Parse XML string to JSON object.
    * @param {string} xml - The XML string to be parsed.
    * @param {object} [options={ explicitArray: false }] - Optional parsing options.

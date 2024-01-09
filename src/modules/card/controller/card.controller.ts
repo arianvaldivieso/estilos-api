@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Logger, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CardService } from '../services/card.service';
-import { User } from 'core/auth/user.decorator';
 import { Card } from '../entities/card.entity';
 import { RechargeCardDto } from '../dto/recharge.dto';
 import { CardDto } from '../dto/card.dto';
+import { UserDecorator } from 'core/auth/user.decorator';
+import { ListMovementCardDto } from '../dto/list-movement-card.dto';
 
 @Controller('cards')
 //@UseGuards(AuthGuard)
@@ -15,17 +16,17 @@ export class CardController {
   constructor(private readonly _cardService: CardService) {}
 
   @Post()
-  async associate(@Body() associateCardDto: CardDto, @User() user): Promise<Card> {
+  async associate(@Body() associateCardDto: CardDto, @UserDecorator() user): Promise<Card> {
     return await this._cardService.associate(associateCardDto, user);
   }
 
   @Get()
-  async findAll(@User() user: any) {
+  async findAll(@UserDecorator() user: any) {
     return await this._cardService.findAll(user);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @User() user) {
+  async findOne(@Param('id') id: string, @UserDecorator() user) {
     return await this._cardService.findOne(id, user);
   }
 
@@ -36,12 +37,17 @@ export class CardController {
   }
 
   @Post('pending-payments')
-  async pendingPayments(@Body() pendingPaymentsCardDto: CardDto, @User() user) {
+  async pendingPayments(@Body() pendingPaymentsCardDto: CardDto, @UserDecorator() user) {
     return await this._cardService.pendingPayments(pendingPaymentsCardDto, user);
   }
 
   @Post('recharge')
-  async recharge(@Body() rechargeCardDto: RechargeCardDto, @User() user) {
+  async recharge(@Body() rechargeCardDto: RechargeCardDto, @UserDecorator() user) {
     return await this._cardService.recharge(rechargeCardDto, user);
+  }
+
+  @Post('list-movements')
+  async getMxCheckListMovements(@Body() listMovementCardDto: ListMovementCardDto, @UserDecorator() user) {
+    return await this._cardService.getMxCheckListMovements(listMovementCardDto, user);
   }
 }
