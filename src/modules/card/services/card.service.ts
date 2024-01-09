@@ -111,14 +111,19 @@ export class CardService {
         if (validateCard) {
           payloadCard.number_account = validateCard.tarjetaCuenta;
         }
+
+        const cardData = await this._cardRepository.save(payloadCard);
+
+        //delete data
+        delete cardData.user;
+  
+        throw new BadRequestException(
+          'Aun no se encuentra activado el servicio para tarjetas distintas a tarjetas estilos',
+        );
       }
 
-      const cardData = await this._cardRepository.save(payloadCard);
+      return 
 
-      //delete data
-      delete cardData.user;
-
-      return cardData;
     } catch (error) {
       throw new NotImplementedException(error);
     }

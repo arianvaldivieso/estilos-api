@@ -29,13 +29,7 @@ export class CardController {
   async findOne(@Param('id') id: string, @UserDecorator() user) {
     return await this._cardService.findOne(id, user);
   }
-
-  //other functions
-  @Get('by-card-number/:cardNumber')
-  async getCardByCardNumber(@Param('cardNumber') cardNumber: string) {
-    return await this._cardService.getCardByCardNumber(cardNumber);
-  }
-
+  
   @Post('pending-payments')
   async pendingPayments(@Body() pendingPaymentsCardDto: CardDto, @UserDecorator() user) {
     return await this._cardService.pendingPayments(pendingPaymentsCardDto, user);
