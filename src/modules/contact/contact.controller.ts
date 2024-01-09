@@ -14,6 +14,7 @@ import { UserDecorator } from 'core/auth/user.decorator';
 import { ContactService } from './contact.service';
 import { Contact } from './entities/contact.entity';
 import { CustomContact } from './interface/contact.interface';
+import { RemoveContactDto } from './dto/remove-contact.dto';
 
 /**
  * Controller for managing contact-related operations.
@@ -50,5 +51,19 @@ export class ContactController {
     @UserDecorator() user: User,
   ): Promise<Contact> {
     return this.contactService.create(createContactDto, user);
+  }
+
+  /**
+   * Creates a new contact for the authenticated user.
+   * @param {RemoveContactDto} createContactDto - DTO containing data for creating a contact.
+   * @param {User} user - The authenticated user obtained from the request.
+   * @returns {Promise<Contact>} - Promise resolved with the created contact.
+   */
+  @Post('remove')
+  remove(
+    @Body() removeContactDto: RemoveContactDto,
+    @UserDecorator() user: User,
+  ): Promise<string> {
+    return this.contactService.remove(removeContactDto, user);
   }
 }
