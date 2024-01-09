@@ -12,7 +12,7 @@ import { User } from '../entities/user.entity';
 import { from, lastValueFrom } from 'rxjs';
 import { TwilioService } from './twilio.service';
 import { MasterBaseService } from './master-base.service';
-import { ConfigService } from 'modules/admin/config/config.service';
+import { ConfigService } from 'modules/admin/services/config/config.service';
 
 /**
  * Service for managing One-Time Password (OTP) codes.

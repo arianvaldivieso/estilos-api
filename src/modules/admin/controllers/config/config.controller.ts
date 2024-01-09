@@ -7,8 +7,8 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { CreateConfigDto } from '../dto/config/create-config.dto';
-import { ConfigService } from './config.service';
+import { CreateConfigDto } from '../../dto/config/create-config.dto';
+import { ConfigService } from '../../services/config/config.service';
 import { AuthGuard } from 'modules/auth/auth.guard';
 import { StandardResponseInterceptor } from 'core/responses/standard-response.interceptor';
 
@@ -20,7 +20,6 @@ export class ConfigController {
 
   @Get(':module')
   findAll(@Param('module') module: string) {
-    console.log(module);
     return this.configService.findAll(module);
   }
 

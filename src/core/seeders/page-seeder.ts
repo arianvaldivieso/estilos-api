@@ -2,7 +2,7 @@ import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 import { Logger } from '@nestjs/common';
 import { pagesData } from './seeders-data/pages.data';
-import { Page } from 'modules/admin/entities/page.entity';
+import { Page } from 'modules/page/entities/page.entity';
 
 export default class PageSeeder implements Seeder {
   public async run(

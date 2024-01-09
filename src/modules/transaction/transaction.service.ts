@@ -1,18 +1,12 @@
-import {
-  BadRequestException,
-  ExecutionContext,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { User } from 'modules/users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { from, lastValueFrom } from 'rxjs';
 import { UsersService } from 'modules/users/services/users.service';
-import { ConfigService } from 'modules/admin/config/config.service';
+import { ConfigService } from 'modules/admin/services/config/config.service';
 
 /**
  * Service for managing transactions.

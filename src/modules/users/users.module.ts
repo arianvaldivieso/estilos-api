@@ -9,8 +9,8 @@ import { OtpService } from './services/otp.service';
 import { TwilioService } from './services/twilio.service';
 import { MasterBaseService } from './services/master-base.service';
 import { UsersService } from './services/users.service';
-import { ConfigService } from 'modules/admin/config/config.service';
 import { GlobalConfig } from 'modules/admin/entities/global-config.entity';
+import { ConfigService } from 'modules/admin/services/config/config.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Otp, GlobalConfig]), RolesModule],

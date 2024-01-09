@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateConfigDto } from '../dto/config/create-config.dto';
+import { CreateConfigDto } from '../../dto/config/create-config.dto';
 import { from, lastValueFrom } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { GlobalConfig } from '../entities/global-config.entity';
+import { GlobalConfig } from '../../entities/global-config.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

@@ -13,6 +13,7 @@ import { TransactionModule } from './modules/transaction/transaction.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { FaqModule } from './modules/faq/faq.module';
 import { ContactModule } from './modules/contact/contact.module';
+import { PageModule } from 'modules/page/page.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ContactModule } from './modules/contact/contact.module';
     AdminModule,
     FaqModule,
     ContactModule,
+    PageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
