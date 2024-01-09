@@ -38,7 +38,7 @@ export class UsersController {
 
     const simplifiedUserObject = {
       ...user,
-      rol: user.rol.name,
+      role: user.rol.name,
     };
 
     return simplifiedUserObject;
