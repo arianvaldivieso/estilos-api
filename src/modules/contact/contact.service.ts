@@ -99,7 +99,7 @@ export class ContactService {
           user: contact.contact,
           created_at: contact.createdAt.toISOString(),
           updated_at: contact.updateAt.toISOString(),
-          is_favorite: false,
+          is_favorite: true,
         }),
       );
 
